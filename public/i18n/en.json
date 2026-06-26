@@ -1,1 +1,7 @@
-{}
+{
+    "nav": {
+        "home": "Home",
+        "products": "Products",
+        "cart": "Cart"
+    }
+}

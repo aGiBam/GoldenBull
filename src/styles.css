@@ -1,31 +1,31 @@
-/* ── Google Fonts — Cinzel for Gothic/Classic headings, Cairo for Arabic ── */
+/* ── Google Fonts ── */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&display=swap');
 
 @import 'tailwindcss';
 
 @layer base {
-  /* ── Dark theme (default) — Golden Bull palette ── */
+  /* ── Dark theme (default) — warm brown luxury ── */
   :root,
   [data-theme='dark'] {
     --color-gold:        #c8920a;
     --color-gold-light:  #e8b430;
     --color-gold-dim:    #7a580a;
     --color-cream:       #f5e6c8;
-    --color-accent:      #8b1a1a;   /* deep crimson for CTA */
+    --color-accent:      #8b1a1a;
 
-    --bg-primary:        #0a0704;
-    --bg-secondary:      #0f0c08;
-    --bg-card:           rgba(200,146,10,0.05);
-    --bg-card-hover:     rgba(200,146,10,0.1);
-    --border-color:      rgba(200,146,10,0.18);
+    /* Warm dark brown — luxurious, not cold black */
+    --bg-primary:        #16100a;
+    --bg-secondary:      #1e1409;
+    --bg-card:           rgba(200,146,10,0.06);
+    --bg-card-hover:     rgba(200,146,10,0.11);
+    --border-color:      rgba(200,146,10,0.2);
 
     --text-primary:      #f5e6c8;
     --text-secondary:    #c4a870;
     --text-muted:        #7a6548;
 
-    --navbar-bg:         rgba(10,7,4,0.96);
+    --navbar-bg:         rgba(20,14,8,0.97);
 
-    /* Keep pink var for any leftover references */
     --color-brand-pink:  #8b1a1a;
     --color-brand-gold:  #c8920a;
   }
@@ -42,13 +42,13 @@
     --bg-secondary:      #f3ede0;
     --bg-card:           #ede6d6;
     --bg-card-hover:     rgba(154,106,5,0.08);
-    --border-color:      rgba(154,106,5,0.18);
+    --border-color:      rgba(154,106,5,0.22);
 
     --text-primary:      #1a0e03;
-    --text-secondary:    #5a3d18;
-    --text-muted:        #9a7a50;
+    --text-secondary:    #4a2e10;
+    --text-muted:        #7a5c30;
 
-    --navbar-bg:         rgba(250,246,239,0.97);
+    --navbar-bg:         rgba(244,238,224,0.98);
 
     --color-brand-pink:  #7a1515;
     --color-brand-gold:  #9a6a05;

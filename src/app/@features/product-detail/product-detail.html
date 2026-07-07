@@ -1,0 +1,131 @@
+<div class="detail-page" *transloco="let t">
+
+  @if (product()) {
+    <div class="detail-container">
+
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a routerLink="/home">{{ t('nav.home') }}</a>
+        <span>/</span>
+        <a routerLink="/products">{{ t('nav.products') }}</a>
+        <span>/</span>
+        <span>{{ lang === 'ar' ? product()!.nameAr : product()!.nameEn }}</span>
+      </nav>
+
+      <!-- Main Layout -->
+      <div class="detail-layout">
+
+        <!-- Image — click to open lightbox -->
+        <div class="detail-image-wrap" (click)="openLightbox()" title="Click to zoom">
+          <img [src]="activeImage()" [alt]="product()!.nameEn" />
+          <div class="image-zoom-hint">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+            </svg>
+          </div>
+          @if (!product()!.inStock) {
+            <div class="detail-oos-badge">{{ t('products.outOfStock') }}</div>
+          }
+        </div>
+
+        <!-- Info -->
+        <div class="detail-info">
+          <span class="detail-category">{{ t('products.' + product()!.category) }}</span>
+
+          <h1 class="detail-name">
+            {{ lang === 'ar' ? product()!.nameAr : product()!.nameEn }}
+          </h1>
+          <p class="detail-name-sub">
+            {{ lang === 'ar' ? product()!.nameEn : product()!.nameAr }}
+          </p>
+
+          <p class="detail-desc">
+            {{ lang === 'ar' ? product()!.descAr : product()!.descEn }}
+          </p>
+
+          <div class="detail-price">{{ product()!.price }} EGP</div>
+
+          <!-- Color Picker -->
+          @if (product()!.colors.length > 0) {
+            <div class="color-picker">
+              <p class="color-picker-label">
+                {{ t('products.color') }}:
+                <strong>{{ lang === 'ar' ? selectedColor()?.nameAr : selectedColor()?.name }}</strong>
+              </p>
+              <div class="color-options">
+                @for (color of product()!.colors; track color.hex) {
+                  <button
+                    class="color-swatch"
+                    [style.background]="color.hex"
+                    [class.selected]="selectedColor()?.hex === color.hex"
+                    [title]="lang === 'ar' ? color.nameAr : color.name"
+                    (click)="selectColor(color)">
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="detail-badges">
+            <span class="badge">✋ {{ t('features.handmade') }}</span>
+            <span class="badge">🏅 {{ t('features.genuine') }}</span>
+            <span class="badge">🎨 {{ t('features.custom') }}</span>
+          </div>
+
+          <button
+            class="detail-cart-btn"
+            [disabled]="!product()!.inStock"
+            [class.added]="added()"
+            (click)="addToCart()"
+          >
+            @if (added()) {
+              ✓ {{ t('products.added') }}
+            } @else {
+              {{ t('products.addToCart') }}
+            }
+          </button>
+
+          <a routerLink="/products" class="back-link">← {{ t('nav.products') }}</a>
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      @if (related().length > 0) {
+        <div class="related-section">
+          <h2>{{ t('products.related') }}</h2>
+          <div class="related-grid">
+            @for (r of related(); track r.id) {
+              <a [routerLink]="['/products', r.id]" class="related-card">
+                <img [src]="r.image" [alt]="r.nameEn" />
+                <p>{{ lang === 'ar' ? r.nameAr : r.nameEn }}</p>
+                <span>{{ r.price }} EGP</span>
+              </a>
+            }
+          </div>
+        </div>
+      }
+
+    </div>
+  } @else {
+    <div class="detail-not-found">
+      <p>Product not found.</p>
+      <a routerLink="/products" class="btn-primary">Back to Products</a>
+    </div>
+  }
+
+</div>
+
+<!-- ── LIGHTBOX ── -->
+@if (lightboxOpen()) {
+  <div class="lightbox-overlay" (click)="closeLightbox()">
+    <button class="lightbox-close" (click)="closeLightbox()">
+      <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <div class="lightbox-content" (click)="$event.stopPropagation()">
+      <img [src]="activeImage()" [alt]="product()?.nameEn" class="lightbox-img" />
+    </div>
+  </div>
+}

@@ -1,0 +1,56 @@
+<div class="auth-page" *transloco="let t">
+  <div class="auth-card">
+    <a routerLink="/home" class="auth-logo-link">
+      <img src="images/logo.png" alt="Golden Bull" class="auth-logo-img" />
+      <span class="auth-brand">GOLDEN <span class="auth-brand-accent">BULL</span></span>
+    </a>
+
+    <h1 class="auth-title">{{ t('nav.login') }}</h1>
+    <p class="auth-subtitle">{{ t('auth.welcomeBack') }}</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form" novalidate>
+      <div class="field-group">
+        <label>{{ t('auth.email') }}</label>
+        <input type="email" formControlName="email" [placeholder]="t('auth.emailPlaceholder')"
+          [class.error]="email.invalid && email.touched" autocomplete="email" />
+        @if (email.invalid && email.touched) {
+          <span class="field-error">{{ t('auth.emailRequired') }}</span>
+        }
+      </div>
+
+      <div class="field-group">
+        <div class="label-row">
+          <label>{{ t('auth.password') }}</label>
+          <a routerLink="/forgot-password" class="forgot-link">{{ t('auth.forgotPassword') }}</a>
+        </div>
+        <div class="input-wrap">
+          <input [type]="showPass() ? 'text' : 'password'" formControlName="password"
+            placeholder="••••••••" [class.error]="password.invalid && password.touched"
+            autocomplete="current-password" />
+          <button type="button" class="toggle-pass" (click)="showPass.update(v => !v)">
+            {{ showPass() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (password.invalid && password.touched) {
+          <span class="field-error">{{ t('auth.passwordRequired') }}</span>
+        }
+      </div>
+
+      @if (errorMsg()) {
+        <div class="auth-error">{{ errorMsg() }}</div>
+      }
+
+      <button type="submit" class="auth-btn" [disabled]="loading()">
+        @if (loading()) {
+          <span class="auth-spinner"></span> {{ t('auth.signingIn') }}
+        } @else {
+          {{ t('nav.login') }}
+        }
+      </button>
+    </form>
+
+    <p class="auth-footer-text">
+      {{ t('auth.noAccount') }} <a routerLink="/register">{{ t('auth.register') }}</a>
+    </p>
+  </div>
+</div>

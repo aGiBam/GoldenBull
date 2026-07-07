@@ -1,1 +1,87 @@
-{{ 'nav.home' | transloco }} <button (click)="switchLang()">AR/EN</button>
+<nav class="navbar-wrapper" [class.scrolled]="isScrolled()" *transloco="let t">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <a routerLink="/home" class="navbar-logo" (click)="closeMenu()">
+      <img src="images/logo.png" alt="Golden Bull" class="logo-img" />
+      <div class="logo-text-wrap">
+        <span class="logo-text">GOLDEN <span class="logo-accent">BULL</span></span>
+        <span class="logo-tagline">Handcrafted Leather · Egypt</span>
+      </div>
+    </a>
+
+    <!-- Desktop Nav -->
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/home" routerLinkActive="active" class="nav-link">{{ t('nav.home') }}</a>
+      </li>
+      <li>
+        <a routerLink="/products" routerLinkActive="active" class="nav-link">{{ t('nav.products') }}</a>
+      </li>
+      @if (auth.isLoggedIn()) {
+        <li>
+          <a routerLink="/profile" routerLinkActive="active" class="nav-link">{{ t('nav.profile') }}</a>
+        </li>
+      } @else {
+        <li>
+          <a routerLink="/login" routerLinkActive="active" class="nav-link">{{ t('nav.login') }}</a>
+        </li>
+      }
+    </ul>
+
+    <!-- Actions -->
+    <div class="nav-actions">
+      <button class="theme-btn" (click)="themeService.toggle()">
+        @if (themeService.theme() === 'dark') {
+          <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        } @else {
+          <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        }
+      </button>
+
+      <button class="lang-btn" (click)="switchLang()">
+        {{ currentLang === 'en' ? 'عربي' : 'EN' }}
+      </button>
+
+      <a routerLink="/cart" class="cart-btn" (click)="closeMenu()">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.35 2.7A1 1 0 006.54 17H17M17 17a2 2 0 100 4 2 2 0 000-4zM9 19a2 2 0 100 4 2 2 0 000-4z" />
+        </svg>
+        @if (cartCount() > 0) {
+          <span class="cart-badge">{{ cartCount() }}</span>
+        }
+      </a>
+
+      <button class="hamburger" (click)="toggleMenu()">
+        @if (isMenuOpen()) {
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        } @else {
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (isMenuOpen()) {
+    <div class="mobile-menu">
+      <a routerLink="/home" routerLinkActive="active" class="mobile-nav-link" (click)="closeMenu()">{{ t('nav.home') }}</a>
+      <a routerLink="/products" routerLinkActive="active" class="mobile-nav-link" (click)="closeMenu()">{{ t('nav.products') }}</a>
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/profile" routerLinkActive="active" class="mobile-nav-link" (click)="closeMenu()">{{ t('nav.profile') }}</a>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active" class="mobile-nav-link" (click)="closeMenu()">{{ t('nav.login') }}</a>
+        <a routerLink="/register" routerLinkActive="active" class="mobile-nav-link" (click)="closeMenu()">{{ t('nav.register') }}</a>
+      }
+    </div>
+  }
+</nav>

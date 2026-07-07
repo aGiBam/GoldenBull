@@ -1,3 +1,131 @@
-/* You can add global styles to this file, and also import other style files */
+/* ── Google Fonts — Cinzel for Gothic/Classic headings, Cairo for Arabic ── */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&display=swap');
 
 @import 'tailwindcss';
+
+@layer base {
+  /* ── Dark theme (default) — Golden Bull palette ── */
+  :root,
+  [data-theme='dark'] {
+    --color-gold:        #c8920a;
+    --color-gold-light:  #e8b430;
+    --color-gold-dim:    #7a580a;
+    --color-cream:       #f5e6c8;
+    --color-accent:      #8b1a1a;   /* deep crimson for CTA */
+
+    --bg-primary:        #0a0704;
+    --bg-secondary:      #0f0c08;
+    --bg-card:           rgba(200,146,10,0.05);
+    --bg-card-hover:     rgba(200,146,10,0.1);
+    --border-color:      rgba(200,146,10,0.18);
+
+    --text-primary:      #f5e6c8;
+    --text-secondary:    #c4a870;
+    --text-muted:        #7a6548;
+
+    --navbar-bg:         rgba(10,7,4,0.96);
+
+    /* Keep pink var for any leftover references */
+    --color-brand-pink:  #8b1a1a;
+    --color-brand-gold:  #c8920a;
+  }
+
+  /* ── Light theme ── */
+  [data-theme='light'] {
+    --color-gold:        #9a6a05;
+    --color-gold-light:  #c8920a;
+    --color-gold-dim:    #5a3d05;
+    --color-cream:       #3d2206;
+    --color-accent:      #7a1515;
+
+    --bg-primary:        #faf6ef;
+    --bg-secondary:      #f3ede0;
+    --bg-card:           #ede6d6;
+    --bg-card-hover:     rgba(154,106,5,0.08);
+    --border-color:      rgba(154,106,5,0.18);
+
+    --text-primary:      #1a0e03;
+    --text-secondary:    #5a3d18;
+    --text-muted:        #9a7a50;
+
+    --navbar-bg:         rgba(250,246,239,0.97);
+
+    --color-brand-pink:  #7a1515;
+    --color-brand-gold:  #9a6a05;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  [dir='rtl'] { font-family: 'Cairo', 'Poppins', sans-serif; }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0; padding: 0;
+    font-family: 'Cinzel', 'Poppins', serif;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  [dir='rtl'] h1, [dir='rtl'] h2, [dir='rtl'] h3,
+  [dir='rtl'] h4, [dir='rtl'] h5, [dir='rtl'] h6 {
+    font-family: 'Cairo', serif;
+  }
+
+  p { margin: 0; }
+  a { text-decoration: none; }
+  button { font-family: inherit; }
+  img { display: block; max-width: 100%; }
+  *, *::before, *::after { box-sizing: border-box; }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--color-gold-dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
+
+/* ── Global CTA button ── */
+.btn-primary {
+  background: var(--color-gold);
+  color: #0a0704;
+  padding: 0.85rem 2.25rem;
+  border-radius: 2px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border: none;
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+}
+
+.btn-primary:hover {
+  background: var(--color-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(200,146,10,0.35);
+}
+
+/* ── Golden ornament divider ── */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-gold);
+  font-size: 1.2rem;
+}
+.ornament::before, .ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}

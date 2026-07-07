@@ -1,0 +1,19 @@
+{
+  "products": [
+    { "id": 1, "nameEn": "Classic Leather Belt", "nameAr": "حزام جلد كلاسيك", "price": 350, "image": "/images/belt.png", "category": "belts", "inStock": true, "descEn": "Timeless classic handcrafted from genuine full-grain leather.", "descAr": "حزام كلاسيكي مصنوع يدوياً من جلد طبيعي عالي الجودة." },
+    { "id": 2, "nameEn": "Wide Leather Belt", "nameAr": "حزام جلد عريض", "price": 420, "image": "/images/belt.png", "category": "belts", "inStock": true, "descEn": "Bold wide-cut belt for a statement look.", "descAr": "حزام عريض بجرأة لإطلالة مميزة." },
+    { "id": 3, "nameEn": "Braided Leather Belt", "nameAr": "حزام جلد مضفر", "price": 480, "image": "/images/belt.png", "category": "belts", "inStock": false, "descEn": "Intricately braided by hand.", "descAr": "مضفر يدوياً بدقة." },
+    { "id": 4, "nameEn": "Slim Bifold Wallet", "nameAr": "محفظة سليم بيفولد", "price": 550, "image": "/images/wallet.jpg", "category": "wallets", "inStock": true, "descEn": "Slim and minimalist bifold wallet.", "descAr": "محفظة بيفولد رفيعة ومينيمالية." },
+    { "id": 5, "nameEn": "Full-Grain Wallet", "nameAr": "محفظة فل جرين", "price": 650, "image": "/images/wallet.jpg", "category": "wallets", "inStock": true, "descEn": "Premium full-grain leather wallet.", "descAr": "محفظة من الجلد الطبيعي الكامل." },
+    { "id": 6, "nameEn": "Zip-Around Wallet", "nameAr": "محفظة زيب", "price": 720, "image": "/images/wallet.jpg", "category": "wallets", "inStock": true, "descEn": "Spacious zip-around wallet.", "descAr": "محفظة زيب واسعة." },
+    { "id": 7, "nameEn": "Minimalist Card Holder", "nameAr": "كارت هولدر مينيمال", "price": 280, "image": "/images/card-holder.png", "category": "cardHolders", "inStock": true, "descEn": "Ultra-slim card holder for the modern minimalist.", "descAr": "كارت هولدر نحيف للغاية." },
+    { "id": 8, "nameEn": "Snap Card Holder", "nameAr": "كارت هولدر سناب", "price": 320, "image": "/images/card-holder.png", "category": "cardHolders", "inStock": true, "descEn": "Secure snap-closure card holder.", "descAr": "كارت هولدر بقفل سناب." },
+    { "id": 9, "nameEn": "Leather Slipper Classic", "nameAr": "شبشب جلد كلاسيك", "price": 800, "image": "/images/slipper.png", "category": "slippers", "inStock": true, "descEn": "Handcrafted classic leather slippers.", "descAr": "شبشب جلد كلاسيك مصنوع يدوياً." },
+    { "id": 10, "nameEn": "Leather Slipper Open", "nameAr": "شبشب جلد مفتوح", "price": 750, "image": "/images/slipper.png", "category": "slippers", "inStock": false, "descEn": "Open-toe leather slippers.", "descAr": "شبشب جلد مفتوح الإصبع." }
+  ],
+  "users": [
+    { "id": 1, "name": "Test User", "email": "test@test.com", "password": "123456", "role": "customer" },
+    { "id": 2, "name": "Admin", "email": "admin@leatherhoard.com", "password": "admin123", "role": "admin" }
+  ],
+  "orders": []
+}

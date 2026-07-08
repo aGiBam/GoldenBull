@@ -3,12 +3,13 @@ import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
+import { getErrorMessage } from '../../core/utils/http-error';
 
 @Component({
   selector: 'app-login',
   imports: [RouterLink, TranslocoModule, ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './auth.css',
+  styleUrl: './auth.scss',
 })
 export class Login {
   private fb = inject(FormBuilder);
@@ -33,8 +34,8 @@ export class Login {
       await this.auth.login(this.form.value.email!, this.form.value.password!);
       const ret = this.route.snapshot.queryParams['returnUrl'] || '/profile';
       this.router.navigateByUrl(ret);
-    } catch (e: any) {
-      this.errorMsg.set(e?.toString() ?? 'Login failed');
+    } catch (e: unknown) {
+      this.errorMsg.set(getErrorMessage(e, 'Login failed'));
     } finally {
       this.loading.set(false);
     }

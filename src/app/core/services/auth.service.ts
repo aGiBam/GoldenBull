@@ -1,80 +1,88 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   id: string;
   name: string;
   email: string;
+  role: 'customer' | 'admin';
   createdAt: string;
 }
 
+interface AuthResponse {
+  token: string;
+  user: User;
+}
+
+const USER_KEY = 'gb_user';
+const TOKEN_KEY = 'gb_token';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _user = signal<User | null>(this._loadUser());
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private readonly base = `${environment.apiUrl}/auth`;
+
+  private _user = signal<User | null>(this.loadUser());
   readonly user = this._user.asReadonly();
   readonly isLoggedIn = computed(() => this._user() !== null);
+  readonly isAdmin = computed(() => this._user()?.role === 'admin');
 
-  constructor(private router: Router) {
-    // Persist user to localStorage whenever it changes
-    effect(() => {
-      const u = this._user();
-      if (u) localStorage.setItem('gb_user', JSON.stringify(u));
-      else localStorage.removeItem('gb_user');
-    });
-  }
-
-  private _loadUser(): User | null {
+  private loadUser(): User | null {
     try {
-      const raw = localStorage.getItem('gb_user');
+      const raw = localStorage.getItem(USER_KEY);
       return raw ? JSON.parse(raw) : null;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }
 
-  login(email: string, _password: string): Promise<User> {
-    // Simulate API — accept any valid email/password (≥6 chars)
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!email) { reject('Invalid credentials'); return; }
-        const user: User = {
-          id: crypto.randomUUID(),
-          name: email.split('@')[0],
-          email,
-          createdAt: new Date().toISOString(),
-        };
-        this._user.set(user);
-        resolve(user);
-      }, 1200);
-    });
+  get token(): string | null {
+    return localStorage.getItem(TOKEN_KEY);
   }
 
-  register(name: string, email: string, _password: string): Promise<User> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!email || !name) { reject('Invalid data'); return; }
-        const user: User = {
-          id: crypto.randomUUID(),
-          name, email,
-          createdAt: new Date().toISOString(),
-        };
-        this._user.set(user);
-        resolve(user);
-      }, 1200);
-    });
+  private persist(res: AuthResponse) {
+    localStorage.setItem(TOKEN_KEY, res.token);
+    localStorage.setItem(USER_KEY, JSON.stringify(res.user));
+    this._user.set(res.user);
   }
 
-  updateProfile(data: Partial<Pick<User, 'name' | 'email'>>) {
-    const u = this._user();
-    if (!u) return;
-    this._user.set({ ...u, ...data });
+  async login(email: string, password: string): Promise<User> {
+    const res = await firstValueFrom(this.http.post<AuthResponse>(`${this.base}/login`, { email, password }));
+    this.persist(res);
+    return res.user;
+  }
+
+  async register(name: string, email: string, password: string): Promise<User> {
+    const res = await firstValueFrom(
+      this.http.post<AuthResponse>(`${this.base}/register`, { name, email, password })
+    );
+    this.persist(res);
+    return res.user;
+  }
+
+  async updateProfile(data: Partial<Pick<User, 'name' | 'email'>>): Promise<User> {
+    const updated = await firstValueFrom(this.http.patch<User>(`${this.base}/me`, data));
+    localStorage.setItem(USER_KEY, JSON.stringify(updated));
+    this._user.set(updated);
+    return updated;
   }
 
   logout() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
     this._user.set(null);
     this.router.navigate(['/home']);
   }
 
-  /** For password reset (simulated) */
+  /**
+   * TODO: not wired to a real email provider yet — the backend has no mail
+   * service. Keep this as a UI-only placeholder until that's decided.
+   */
   sendResetEmail(_email: string): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, 1000));
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   }
 }

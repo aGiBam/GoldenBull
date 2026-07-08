@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// role: "customer" | "admin"
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("customer")
+  createdAt    DateTime @default(now())
+  orders       Order[]
+}
+
+// category: "belts" | "wallets" | "cardHolders" | "slippers" | "portefeuille" | "longWallets"
+model Product {
+  id         Int         @id @default(autoincrement())
+  nameEn     String
+  nameAr     String
+  descEn     String
+  descAr     String
+  price      Float
+  image      String
+  category   String
+  inStock    Boolean     @default(true)
+  colors     String // JSON-encoded ColorOption[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[]
+}
+
+// status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
+// paymentStatus: "unpaid" | "paid" | "failed" (only meaningful for online payment methods)
+model Order {
+  id                String      @id @default(uuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id])
+  status            String      @default("pending")
+  paymentMethod     String
+  paymentStatus     String      @default("unpaid")
+  paymobOrderId     String? // Paymob's own order id, set once payment is initiated
+  paymobTransaction String? // Paymob transaction id, set once the webhook fires
+  subtotal          Float
+  deposit           Float
+  shippingName      String
+  shippingPhone     String
+  shippingAddress   String
+  shippingCity      String
+  createdAt         DateTime    @default(now())
+  items             OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  nameEn    String
+  nameAr    String
+  price     Float
+  quantity  Int
+  image     String
+}

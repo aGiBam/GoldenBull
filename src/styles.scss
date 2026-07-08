@@ -1,7 +1,29 @@
+/* ── Angular Material ──
+   Placeholder M3 theme (orange palette) so Material components (tables, dialogs,
+   stepper, snackbar — needed for the admin/checkout work in the 10-day plan) are
+   usable immediately. This is a starting point only: swap `primary` for a palette
+   generated from your real gold (#c8920a) via the Material Theme Builder when you
+   do the visual pass — that part is yours, not touched here.
+   NOTE: @use must be the very first rule in a Sass file, before any @import. */
+@use '@angular/material' as mat;
+
 /* ── Google Fonts ── */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&display=swap');
 
 @import 'tailwindcss';
+
+html {
+  @include mat.core();
+  @include mat.theme((
+    color: (
+      theme-type: dark,
+      primary: mat.$orange-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Poppins,
+    density: 0,
+  ));
+}
 
 @layer base {
   /* ── Dark theme (default) — warm brown luxury ── */

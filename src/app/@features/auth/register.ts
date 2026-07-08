@@ -3,12 +3,13 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
+import { getErrorMessage } from '../../core/utils/http-error';
 
 @Component({
   selector: 'app-register',
   imports: [RouterLink, TranslocoModule, ReactiveFormsModule],
   templateUrl: './register.html',
-  styleUrl: './auth.css',
+  styleUrl: './auth.scss',
 })
 export class Register {
   private fb = inject(FormBuilder);
@@ -32,8 +33,8 @@ export class Register {
     try {
       await this.auth.register(this.form.value.name!, this.form.value.email!, this.form.value.password!);
       this.router.navigate(['/profile']);
-    } catch (e: any) {
-      this.errorMsg.set(e?.toString() ?? 'Registration failed');
+    } catch (e: unknown) {
+      this.errorMsg.set(getErrorMessage(e, 'Registration failed'));
     } finally {
       this.loading.set(false);
     }

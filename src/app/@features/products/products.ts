@@ -1,7 +1,9 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { ActivatedRoute } from '@angular/router';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { CartService } from '../../core/services/cart.service';
 import { ProductsService, Product } from '../../core/services/products.service';
 
@@ -9,7 +11,7 @@ import { ProductsService, Product } from '../../core/services/products.service';
   selector: 'app-products',
   imports: [TranslocoModule, RouterLink],
   templateUrl: './products.html',
-  styleUrl: './products.css',
+  styleUrl: './products.scss',
 })
 export class Products implements OnInit {
   private route = inject(ActivatedRoute);
@@ -20,9 +22,19 @@ export class Products implements OnInit {
 
   readonly filters = ['all', 'belts', 'wallets', 'longWallets', 'portefeuille', 'cardHolders', 'slippers'];
 
-  get filteredProducts(): Product[] {
-    return this.productsService.getByCategory(this.activeFilter());
-  }
+  /**
+   * Re-fetches from the API whenever the filter changes. switchMap cancels any
+   * in-flight request for the previous filter, so rapid tab-clicking can't
+   * resolve out of order.
+   */
+  filteredProducts = toSignal(
+    toObservable(this.activeFilter).pipe(
+      switchMap((filter) =>
+        this.productsService.getByCategory(filter).pipe(catchError(() => of([] as Product[])))
+      )
+    ),
+    { initialValue: [] as Product[] }
+  );
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {

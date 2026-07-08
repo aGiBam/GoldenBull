@@ -1,13 +1,15 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
-import { ProductsService } from '../../core/services/products.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map, catchError, of } from 'rxjs';
+import { ProductsService, Product } from '../../core/services/products.service';
 
 @Component({
   selector: 'app-home',
   imports: [RouterLink, TranslocoModule],
   templateUrl: './home.html',
-  styleUrl: './home.css',
+  styleUrl: './home.scss',
 })
 export class Home implements OnInit, OnDestroy {
   private ps = inject(ProductsService);
@@ -36,7 +38,13 @@ export class Home implements OnInit, OnDestroy {
     { key: 'slippers',    keyDesc: 'slippersDesc',     image: 'images/belt-4.jpg'    },
   ];
 
-  featuredProducts = this.ps.all.filter(p => p.inStock).slice(0, 4);
+  featuredProducts = toSignal(
+    this.ps.getAll().pipe(
+      map((products) => products.filter((p) => p.inStock).slice(0, 4)),
+      catchError(() => of([] as Product[]))
+    ),
+    { initialValue: [] as Product[] }
+  );
 
   testimonials = [
     { name: 'Ahmed K.',   text: 'The belt I ordered is absolutely stunning. You can feel the quality in every stitch.' },

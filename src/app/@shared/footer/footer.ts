@@ -6,7 +6,7 @@ import { TranslocoModule } from '@jsverse/transloco';
   selector: 'app-footer',
   imports: [RouterLink, TranslocoModule],
   templateUrl: './footer.html',
-  styleUrl: './footer.css',
+  styleUrl: './footer.scss',
 })
 export class Footer {
   year = new Date().getFullYear();

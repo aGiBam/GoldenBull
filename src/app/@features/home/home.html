@@ -110,7 +110,7 @@
       <a routerLink="/products" class="view-all-link">{{ t('products.viewAll') }} →</a>
     </div>
     <div class="featured-grid">
-      @for (p of featuredProducts; track p.id) {
+      @for (p of featuredProducts(); track p.id) {
         <a [routerLink]="['/products', p.id]" class="feat-card">
           <div class="feat-img-wrap">
             <img [src]="p.image" [alt]="p.nameEn" loading="lazy" />

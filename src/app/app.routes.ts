@@ -12,6 +12,7 @@ export const routes: Routes = [
   { path: 'forgot-password', loadComponent: () => import('./@features/forgot-password/forgot-password').then(c => c.ForgotPassword), canActivate: [guestGuard] },
   { path: 'profile', loadComponent: () => import('./@features/profile/profile').then(c => c.Profile), canActivate: [authGuard] },
   { path: 'admin/orders', loadComponent: () => import('./@features/admin-orders/admin-orders').then(c => c.AdminOrders), canActivate: [adminGuard] },
+  { path: 'admin/products', loadComponent: () => import('./@features/admin-products/admin-products').then(c => c.AdminProducts), canActivate: [adminGuard] },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' },
 ];

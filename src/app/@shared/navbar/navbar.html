@@ -30,6 +30,9 @@
         <li>
           <a routerLink="/admin/orders" routerLinkActive="active" class="nav-link">{{ t('admin.orders') }}</a>
         </li>
+        <li>
+          <a routerLink="/admin/products" routerLinkActive="active" class="nav-link">{{ t('admin.products') }}</a>
+        </li>
       }
     </ul>
 
@@ -89,6 +92,7 @@
       }
       @if (auth.isAdmin()) {
         <a routerLink="/admin/orders" routerLinkActive="active" class="mobile-nav-link" (click)="closeMenu()">{{ t('admin.orders') }}</a>
+        <a routerLink="/admin/products" routerLinkActive="active" class="mobile-nav-link" (click)="closeMenu()">{{ t('admin.products') }}</a>
       }
     </div>
   }

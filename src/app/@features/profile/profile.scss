@@ -123,6 +123,8 @@
 
 .field-group input:focus { border-color: var(--color-gold); }
 
+.field-error { color: #e57373; font-size: 0.75rem; }
+
 .profile-form-footer {
   display: flex; align-items: center; gap: 1rem;
   margin-top: 0.5rem;
@@ -170,6 +172,14 @@
 .settings-label { color: var(--text-muted); font-size: 0.78rem; margin: 0 0 0.25rem; font-weight: 600; }
 .settings-label.danger { color: #e57373; }
 .settings-value { color: var(--text-primary); font-size: 0.9rem; margin: 0; }
+
+.settings-item-form {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.settings-item-form .profile-form { max-width: 380px; }
 
 .danger-zone { margin-top: 1.5rem; }
 

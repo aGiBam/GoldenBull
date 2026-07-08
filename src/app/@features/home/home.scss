@@ -569,3 +569,13 @@
   .cat-grid { grid-template-columns: 1fr; }
   .featured-grid { grid-template-columns: 1fr; }
 }
+
+/* Promo popup: the email input + CLAIM OFFER button sit side by side with
+   nowrap text, which overflows the modal on narrow phones. Stack them. */
+@media (max-width: 480px) {
+  .promo-modal { padding: 2rem 1.25rem; }
+  .promo-title { font-size: clamp(1.6rem, 8vw, 2.2rem); }
+  .promo-form { flex-direction: column; gap: 0.6rem; }
+  .promo-form input { border-right: 1px solid var(--border-color); width: 100%; }
+  .promo-form button { width: 100%; white-space: normal; }
+}

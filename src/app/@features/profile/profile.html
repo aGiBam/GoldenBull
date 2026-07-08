@@ -113,6 +113,45 @@
                 <p class="settings-value">{{ auth.user()?.createdAt | date:'mediumDate' }}</p>
               </div>
             </div>
+
+            <div class="settings-item settings-item-form">
+              <p class="settings-label">{{ t('profile.changePassword') }}</p>
+              <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile-form">
+                <div class="field-group">
+                  <label>{{ t('profile.currentPassword') }}</label>
+                  <input type="password" formControlName="currentPassword" />
+                  @if (passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched) {
+                    <span class="field-error">{{ t('checkout.required') }}</span>
+                  }
+                </div>
+                <div class="field-group">
+                  <label>{{ t('profile.newPassword') }}</label>
+                  <input type="password" formControlName="newPassword" />
+                  @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+                    <span class="field-error">{{ t('auth.passwordMin') }}</span>
+                  }
+                </div>
+                <div class="field-group">
+                  <label>{{ t('profile.confirmPassword') }}</label>
+                  <input type="password" formControlName="confirmPassword" />
+                  @if (passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched) {
+                    <span class="field-error">{{ t('checkout.required') }}</span>
+                  }
+                </div>
+                <div class="profile-form-footer">
+                  <button type="submit" class="profile-save-btn" [disabled]="passwordSaving()">
+                    @if (passwordSaving()) { <span class="auth-spinner"></span> } @else { {{ t('profile.save') }} }
+                  </button>
+                  @if (passwordSaved()) {
+                    <span class="save-success">✓ {{ t('profile.saved') }}</span>
+                  }
+                  @if (passwordError()) {
+                    <span class="text-red-500 text-sm">{{ passwordError() }}</span>
+                  }
+                </div>
+              </form>
+            </div>
+
             <div class="settings-item danger-zone">
               <p class="settings-label danger">{{ t('profile.dangerZone') }}</p>
               <button class="logout-btn" (click)="logout()">{{ t('auth.logout') }}</button>

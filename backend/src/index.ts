@@ -4,7 +4,6 @@ import cors from 'cors';
 import { authRouter } from './routes/auth.routes';
 import { productsRouter } from './routes/products.routes';
 import { ordersRouter } from './routes/orders.routes';
-import { paymentsRouter } from './routes/payments.routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
 
 const app = express();
@@ -30,14 +29,15 @@ app.use(
     },
   })
 );
-app.use(express.json());
+// Raised from the default 100kb so checkout can attach a base64-encoded
+// payment-proof screenshot (see orders.routes.ts / paymentProof).
+app.use(express.json({ limit: '6mb' }));
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/auth', authRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
-app.use('/api/payments', paymentsRouter);
 
 app.use(notFound);
 app.use(errorHandler);

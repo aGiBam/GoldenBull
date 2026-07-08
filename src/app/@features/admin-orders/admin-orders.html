@@ -1,0 +1,72 @@
+<div class="admin-orders-page" *transloco="let t">
+  <div class="admin-header">
+    <h1>{{ t('admin.allOrders') }}</h1>
+  </div>
+
+  @if (errorMsg()) {
+    <p class="error-banner">{{ errorMsg() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="state-msg">…</p>
+  } @else if (orders().length === 0) {
+    <p class="state-msg">{{ t('admin.noOrders') }}</p>
+  } @else {
+    <div class="orders-table-wrap">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>{{ t('admin.customer') }}</th>
+            <th>{{ t('admin.date') }}</th>
+            <th>{{ t('admin.paymentMethod') }}</th>
+            <th>{{ t('admin.proof') }}</th>
+            <th>{{ t('admin.total') }}</th>
+            <th>{{ t('admin.status') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.id) {
+            <tr>
+              <td>
+                <div class="cell-customer">
+                  <strong>{{ order.shippingName }}</strong>
+                  <span>{{ order.user?.email }}</span>
+                  <span>{{ order.shippingPhone }}</span>
+                </div>
+              </td>
+              <td>{{ order.createdAt | date: 'mediumDate' }}</td>
+              <td>{{ order.paymentMethod }}</td>
+              <td>
+                @if (order.paymentProof) {
+                  <button type="button" class="proof-thumb" (click)="openProof(order.paymentProof!)">
+                    <img [src]="order.paymentProof" alt="proof" />
+                  </button>
+                } @else {
+                  <span class="no-proof">{{ t('admin.noProof') }}</span>
+                }
+              </td>
+              <td>{{ orderTotal(order) }} EGP</td>
+              <td>
+                <select
+                  [value]="order.status"
+                  [disabled]="updatingId() === order.id"
+                  (change)="onStatusChange(order, $any($event.target).value)"
+                >
+                  @for (s of statuses; track s) {
+                    <option [value]="s">{{ s }}</option>
+                  }
+                </select>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (lightboxImage()) {
+    <div class="proof-lightbox" (click)="closeProof()">
+      <img [src]="lightboxImage()" alt="payment proof" (click)="$event.stopPropagation()" />
+    </div>
+  }
+</div>

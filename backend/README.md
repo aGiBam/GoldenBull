@@ -1,26 +1,32 @@
 # Golden Bull API
 
-Real backend for the storefront: Express + TypeScript + Prisma + SQLite. Replaces
-`mock-server/` (json-server) and the hardcoded arrays that used to live inside the
-Angular services.
+Real backend for the storefront: Express + TypeScript + Prisma + Postgres (Neon).
+Replaces `mock-server/` (json-server) and the hardcoded arrays that used to live
+inside the Angular services.
 
-## Setup
+## Setup (local development)
+
+You need a free Neon Postgres database first (see "Deploying for free" below —
+do steps 1-2 there even if you're only running locally, since the database is
+shared between local dev and production).
 
 ```bash
 cd backend
 npm install
-cp .env.example .env
-npm run prisma:push   # creates dev.db from prisma/schema.prisma
-npm run seed           # loads the 13 products + 2 test users
-npm run dev             # http://localhost:3000
+cp .env.example .env   # then fill in DATABASE_URL with your Neon connection string
+npm run prisma:push     # creates the tables from prisma/schema.prisma
+npm run seed              # loads the 13 products + 2 test users
+npm run dev                # http://localhost:3000
 ```
 
-Seeded accounts (same credentials as the old mock-server so nothing else changes):
+Seeded accounts:
 
 | Email | Password | Role |
 |---|---|---|
 | test@test.com | 123456 | customer |
-| admin@leatherhoard.com | admin123 | admin |
+| admin@goldenbull.com | admin123 | admin |
+
+**Change these before going live** — see "Production note" below.
 
 ## Endpoints
 
@@ -30,39 +36,89 @@ Seeded accounts (same credentials as the old mock-server so nothing else changes
 - `PATCH /api/auth/me` (auth required)
 - `GET /api/products` `?category=belts`
 - `GET /api/products/:id`
-- `POST /api/products` / `PUT /api/products/:id` / `DELETE /api/products/:id` (admin only — for the admin CRUD screens in day 9 of the plan)
-- `POST /api/orders` (auth required)
+- `POST /api/products` / `PUT /api/products/:id` / `DELETE /api/products/:id` (admin only)
+- `POST /api/orders` (auth required) `{ paymentMethod, paymentProof?, shippingName, shippingPhone, shippingAddress, shippingCity, items[] }`
 - `GET /api/orders/me` (auth required — current user's orders)
 - `GET /api/orders` (admin only)
 - `PATCH /api/orders/:id/status` (admin only)
-- `POST /api/payments/paymob/initiate` `{ orderId }` (auth required — returns `{ iframeUrl }` to redirect the customer to)
-- `POST /api/payments/paymob/webhook` (public, HMAC-verified — Paymob calls this, not the frontend)
 
 All protected routes expect `Authorization: Bearer <token>`.
 
-## Paymob (card payments)
+## Payment methods
 
-Card checkout goes through [Paymob Accept](https://accept.paymob.com). Setup:
+No online payment gateway — keeps things simple and free of any subscription/merchant
+fees. Checkout offers three pay-on-delivery / manual-transfer methods: Cash on Delivery,
+Vodafone Cash, and InstaPay. For Vodafone Cash/InstaPay the customer can optionally
+attach a screenshot of the transfer (`paymentProof`, stored as a base64 image on the
+order — no file storage service needed). Review pending orders and their proof images
+at `/admin/orders` in the frontend (admin login required), then confirm via the status
+dropdown, which calls `PATCH /api/orders/:id/status`.
 
-1. Create a Paymob merchant account at accept.paymob.com and complete verification (required before you can go live, but test/sandbox keys work immediately for development).
-2. In the Paymob dashboard, go to **Developers > API Keys** and copy the API Key into `PAYMOB_API_KEY`.
-3. Go to **Developers > Payment Integrations**, add a "Card" integration, and copy its integration ID into `PAYMOB_INTEGRATION_ID_CARD`.
-4. Go to **Developers > iFrames**, create an iframe linked to that card integration, and copy the iframe ID into `PAYMOB_IFRAME_ID`.
-5. Go to **Settings > Account Info** (or the integration's webhook settings) and copy the **HMAC secret** into `PAYMOB_HMAC_SECRET`. This is what proves a webhook call really came from Paymob — never skip it.
-6. In the same webhook settings, set the callback/webhook URL to `https://<your-deployed-api-domain>/api/payments/paymob/webhook`. This only works once the backend is deployed somewhere with a public URL — it can't point at `localhost`. For local testing, tools like `ngrok` can expose your local server temporarily.
-7. Restart the backend after editing `.env` so the new variables are picked up.
+## Why Postgres (Neon) instead of SQLite
 
-Without these four variables set, `/api/payments/paymob/initiate` will fail with a clear "Missing required env var" error — other checkout flows (cash on delivery, etc.) are unaffected.
+The backend used to run on SQLite (a single file on disk) — simple for local dev, but
+free hosting platforms (Render, Railway, etc.) wipe the filesystem on every restart or
+redeploy, so a SQLite database would silently lose all products/orders/users the first
+time the server restarts. Neon is a free, always-on Postgres database that lives
+separately from the backend server, so it isn't affected by that. The tradeoff: you
+need an internet connection to run the backend locally now, since local dev points at
+the same Neon database (see `DATABASE_URL` in `.env`).
 
-The order's `paymentStatus` field (`unpaid` / `paid` / `failed`) is updated automatically by the webhook once Paymob confirms the transaction — check it via Prisma Studio (`npx prisma studio`) or `GET /api/orders/:id`.
+## Deploying for free (Render + Neon + Cloudflare Pages)
 
-## Why SQLite + Prisma
+No credit card needed anywhere in this stack. Total cost: $0/month for a small shop's
+traffic.
 
-Zero setup (no DB server to install/run), the schema is version-controlled and
-type-safe, and moving to Postgres later is a one-line `datasource` change plus a
-`prisma migrate` — you are not locked in for production.
+### 1. Database — Neon (Postgres)
+
+1. Create a free account at [neon.tech](https://neon.tech) (no credit card).
+2. Create a new project. Neon gives you a connection string immediately —
+   copy it (Dashboard > Connection Details > Connection string, "Pooled connection").
+3. You'll use this same connection string for both local dev (`backend/.env`) and
+   the deployed backend (Render env vars, step 2 below).
+
+### 2. Backend — Render
+
+1. Push this repo to GitHub if you haven't already.
+2. Create a free account at [render.com](https://render.com) (no credit card).
+3. New > Blueprint, point it at your GitHub repo — Render will read `render.yaml`
+   at the repo root and set up the web service automatically (root directory
+   `backend/`, build command, start command already configured).
+4. In the service's Environment tab, set:
+   - `DATABASE_URL` — your Neon connection string from step 1.
+   - `CORS_ORIGIN` — your Cloudflare Pages URL (step 3 below); you can leave this
+     blank initially and fill it in after the frontend is deployed, then redeploy.
+   - `JWT_SECRET` is auto-generated by the blueprint; leave it as is.
+5. Deploy. First request after idle periods takes ~30-60s to wake up (free tier
+   behavior) — this is normal, not a bug.
+6. After the first deploy, run the schema push and seed once against the live
+   database (from your machine, with `DATABASE_URL` in `.env` pointed at Neon):
+   ```bash
+   cd backend
+   npm run prisma:push
+   npm run seed
+   ```
+
+### 3. Frontend — Cloudflare Pages
+
+1. Create a free account at [Cloudflare](https://dash.cloudflare.com) (no credit card).
+2. Before deploying, update `src/environments/environment.production.ts` in the
+   frontend with your live Render backend URL, e.g.
+   `apiUrl: 'https://golden-bull-api.onrender.com/api'`.
+3. Workers & Pages > Create > Pages > connect your GitHub repo.
+4. Build settings: build command `npm run build`, output directory
+   `dist/ecommerce/browser`, root directory `/` (repo root, not `backend/`).
+5. Deploy. Cloudflare gives you a URL like `golden-bull.pages.dev` — copy it and
+   set it as `CORS_ORIGIN` on Render (step 2.4), then redeploy the backend.
+
+### Custom domain
+
+Both Render and Cloudflare Pages support attaching your own domain for free once
+you have one — not required to go live, just a nicer URL than the default one.
 
 ## Production note
 
-`JWT_SECRET` in `.env.example` is a placeholder. Generate a real random secret
-before deploying (`openssl rand -base64 48`), and never commit `.env`.
+`JWT_SECRET` in `.env.example` is a placeholder (the Render blueprint generates a
+real one automatically). If you set it manually anywhere, use `openssl rand -base64 48`
+and never commit `.env`. Also change the two seeded account passwords before real
+customers start signing up with those same emails.

@@ -171,6 +171,92 @@
 
 .deposit-note svg { flex-shrink: 0; margin-top: 1px; }
 
+/* Payment proof upload */
+.proof-upload {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.proof-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.proof-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.proof-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.proof-dropzone:hover {
+  border-color: var(--color-gold);
+  color: var(--color-brand-gold);
+}
+
+.proof-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.proof-preview img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.proof-preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.proof-preview-info span {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proof-remove {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: #e05757;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.proof-remove:hover { text-decoration: underline; }
+
 /* Summary card */
 .summary-card {
   background: var(--bg-card);

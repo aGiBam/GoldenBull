@@ -15,10 +15,17 @@ export interface OrderItemDto {
 
 export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
 
+export interface OrderUserDto {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export interface OrderDto {
   id: string;
   status: OrderStatus;
   paymentMethod: string;
+  paymentProof?: string | null;
   subtotal: number;
   deposit: number;
   shippingName: string;
@@ -27,10 +34,12 @@ export interface OrderDto {
   shippingCity: string;
   createdAt: string;
   items: OrderItemDto[];
+  user?: OrderUserDto;
 }
 
 export interface CreateOrderPayload {
   paymentMethod: string;
+  paymentProof?: string;
   shippingName: string;
   shippingPhone: string;
   shippingAddress: string;
@@ -49,5 +58,15 @@ export class OrdersService {
 
   getMine(): Observable<OrderDto[]> {
     return this.http.get<OrderDto[]>(`${this.base}/me`);
+  }
+
+  /** Admin only. */
+  getAll(): Observable<OrderDto[]> {
+    return this.http.get<OrderDto[]>(this.base);
+  }
+
+  /** Admin only. */
+  updateStatus(id: string, status: OrderStatus): Observable<OrderDto> {
+    return this.http.patch<OrderDto>(`${this.base}/${id}/status`, { status });
   }
 }

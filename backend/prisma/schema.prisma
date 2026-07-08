@@ -2,8 +2,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Postgres (Neon free tier) — see backend/README.md "Deploying for free" for
+// how to get a connection string. Local development also points at the same
+// Neon database via DATABASE_URL in .env, so you need an internet connection
+// to run the backend locally (a deliberate tradeoff: it means your data is
+// never lost to a host's ephemeral disk — see README for why that matters).
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -36,24 +41,26 @@ model Product {
 }
 
 // status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
-// paymentStatus: "unpaid" | "paid" | "failed" (only meaningful for online payment methods)
+// paymentMethod: "cod" | "vodafone" | "instapay" — all pay-on-delivery / manual-transfer,
+// no online payment gateway is used, so there's no separate paymentStatus to track.
+// paymentProof: optional base64 data URL of a transfer screenshot the customer uploads
+// at checkout for vodafone/instapay orders, so the admin can verify payment manually
+// before confirming the order (see /admin/orders in the frontend).
 model Order {
-  id                String      @id @default(uuid())
-  userId            String
-  user              User        @relation(fields: [userId], references: [id])
-  status            String      @default("pending")
-  paymentMethod     String
-  paymentStatus     String      @default("unpaid")
-  paymobOrderId     String? // Paymob's own order id, set once payment is initiated
-  paymobTransaction String? // Paymob transaction id, set once the webhook fires
-  subtotal          Float
-  deposit           Float
-  shippingName      String
-  shippingPhone     String
-  shippingAddress   String
-  shippingCity      String
-  createdAt         DateTime    @default(now())
-  items             OrderItem[]
+  id              String      @id @default(uuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  status          String      @default("pending")
+  paymentMethod   String
+  paymentProof    String?
+  subtotal        Float
+  deposit         Float
+  shippingName    String
+  shippingPhone   String
+  shippingAddress String
+  shippingCity    String
+  createdAt       DateTime    @default(now())
+  items           OrderItem[]
 }
 
 model OrderItem {

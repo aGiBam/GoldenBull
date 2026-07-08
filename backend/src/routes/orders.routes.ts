@@ -16,7 +16,11 @@ const orderItemSchema = z.object({
 });
 
 const createOrderSchema = z.object({
-  paymentMethod: z.enum(['card', 'cod', 'vodafone', 'instapay']),
+  paymentMethod: z.enum(['cod', 'vodafone', 'instapay']),
+  // Base64 data URL of a transfer screenshot (optional — only relevant for
+  // vodafone/instapay). Capped well under the 6mb JSON body limit set in
+  // index.ts so a single bad request can't exhaust the request size budget.
+  paymentProof: z.string().max(5_000_000).optional(),
   shippingName: z.string().min(1),
   shippingPhone: z.string().regex(/^01[0-9]{9}$/),
   shippingAddress: z.string().min(1),
@@ -34,6 +38,7 @@ ordersRouter.post('/', requireAuth, async (req: AuthedRequest, res, next) => {
       data: {
         userId: req.user!.id,
         paymentMethod: body.paymentMethod,
+        paymentProof: body.paymentProof,
         subtotal,
         deposit,
         shippingName: body.shippingName,

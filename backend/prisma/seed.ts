@@ -38,11 +38,15 @@ const LONG_WALLET_COLORS = [
   { name: 'Tan', nameAr: 'كستنائي', hex: '#a0622a', image: 'images/longwallet-2.jpg' },
 ];
 // Real slipper photos (the old data pointed all three colors at the same
-// belt photo, so the swatches never actually changed the picture).
+// belt photo, so the swatches never actually changed the picture). Camel,
+// Mahogany and Black were added later from the same photo folder.
 const SLIPPER_COLORS = [
   { name: 'Tan', nameAr: 'كستنائي', hex: '#c8975a', image: 'images/slipper-1.jpg' },
   { name: 'Dark Brown', nameAr: 'بني غامق', hex: '#5a3a22', image: 'images/slipper-2.jpg' },
   { name: 'Medium Brown', nameAr: 'بني وسط', hex: '#7a4f30', image: 'images/slipper-3.jpg' },
+  { name: 'Camel', nameAr: 'جملي', hex: '#b8763a', image: 'images/slipper-4.jpg' },
+  { name: 'Mahogany', nameAr: 'بني محمر', hex: '#4a2318', image: 'images/slipper-5.jpg' },
+  { name: 'Black', nameAr: 'أسود', hex: '#1a1a1a', image: 'images/slipper-6.jpg' },
 ];
 
 const products = [
@@ -58,7 +62,6 @@ const products = [
   { nameEn: 'Portefeuille Slim', nameAr: 'بورتفيه سليم نسائي', price: 620, image: 'images/portefeuille-3.jpg', category: 'portefeuille', inStock: true, descEn: 'Slim portefeuille in tan cowhide-pattern leather. Perfect everyday companion.', descAr: 'بورتفيه رفيع بلمسة جلد طبيعي بخامة الكاوهايد الكستنائي. رفيق مثالي لكل يوم.', colors: PORTEFEUILLE_COLORS },
   { nameEn: 'Minimalist Card Holder', nameAr: 'كارت هولدر مينيمال', price: 280, image: 'images/card-1.jpg', category: 'cardHolders', inStock: true, descEn: 'Ultra-slim card holder for the modern minimalist. Fits 4–6 cards comfortably.', descAr: 'كارت هولدر نحيف للغاية للشخصية العصرية المينيمالية. يحمل 4-6 بطاقات.', colors: CARD_COLORS },
   { nameEn: 'Snap Card Holder', nameAr: 'كارت هولدر سناب', price: 320, image: 'images/card-2.jpg', category: 'cardHolders', inStock: true, descEn: 'Secure snap-closure card holder with easy card access.', descAr: 'كارت هولدر بقفل سناب آمن مع سهولة الوصول للبطاقات.', colors: CARD_COLORS },
-  { nameEn: 'Leather Slipper — Classic', nameAr: 'شبشب جلد كلاسيك', price: 800, image: 'images/slipper-1.jpg', category: 'slippers', inStock: true, descEn: 'Handcrafted classic leather slippers for ultimate comfort.', descAr: 'شبشب جلد كلاسيك مصنوع يدوياً لراحة قصوى.', colors: SLIPPER_COLORS },
   { nameEn: 'Leather Slipper — Classic', nameAr: 'شبشب جلد كلاسيك', price: 800, image: 'images/slipper-1.jpg', category: 'slippers', inStock: true, descEn: 'Handcrafted classic leather slippers for ultimate comfort.', descAr: 'شبشب جلد كلاسيك مصنوع يدوياً لراحة قصوى.', colors: SLIPPER_COLORS },
 ];
 

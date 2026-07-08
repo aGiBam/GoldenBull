@@ -2,9 +2,10 @@ FROM node:20-slim
 
 WORKDIR /usr/src/app
 
-# Install deps first (better layer caching)
-COPY package.json package-lock.json ./
-RUN npm ci
+# Install deps first (better layer caching). The * makes package-lock.json
+# optional so the build doesn't fail if it isn't committed to the repo.
+COPY package.json package-lock.json* ./
+RUN npm install
 
 # Copy the rest of the backend source
 COPY . .

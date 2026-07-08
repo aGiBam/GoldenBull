@@ -89,7 +89,7 @@ async function main() {
   await prisma.user.create({
     data: {
       name: 'Admin',
-      email: 'admin@leatherhoard.com',
+      email: 'admin@goldenbull.com',
       passwordHash: await bcrypt.hash('admin123', 10),
       role: 'admin',
     },

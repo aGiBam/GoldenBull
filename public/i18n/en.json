@@ -88,8 +88,6 @@
     "address": "Delivery Address",
     "city": "City",
     "paymentMethod": "Payment Method",
-    "payCard": "Bank Card",
-    "payCardDesc": "Visa / Mastercard — secure online payment",
     "payCOD": "Cash on Delivery",
     "payCODDesc": "Pay when you receive your order. A small deposit is required to confirm.",
     "payVodafone": "Vodafone Cash",
@@ -97,6 +95,10 @@
     "payInstapay": "InstaPay",
     "payInstapayDesc": "Send payment via InstaPay",
     "depositNote": "A deposit of 20% is required to confirm your order. We will contact you with payment details.",
+    "proofLabel": "Payment Proof",
+    "proofHint": "Upload a screenshot of your transfer so we can confirm your order faster (optional).",
+    "proofChoose": "Choose a screenshot",
+    "proofRemove": "Remove",
     "orderSummary": "Order Summary",
     "placeOrder": "Place Order",
     "orderPlaced": "Order Placed!",
@@ -189,5 +191,18 @@
     "accountInfo": "Account Information",
     "name": "Full Name",
     "email": "Email Address"
+  },
+  "admin": {
+    "orders": "Orders",
+    "allOrders": "All Orders",
+    "customer": "Customer",
+    "status": "Status",
+    "paymentMethod": "Payment",
+    "proof": "Proof",
+    "noProof": "None",
+    "viewProof": "View",
+    "total": "Total",
+    "date": "Date",
+    "noOrders": "No orders yet."
   }
 }

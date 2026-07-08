@@ -1,5 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, computed, effect } from '@angular/core';
 
 export interface CartItem {
   id: number;
@@ -11,35 +10,45 @@ export interface CartItem {
   quantity: number;
 }
 
+const STORAGE_KEY = 'gb_cart';
+
 @Injectable({ providedIn: 'root' })
 export class CartService {
-  private itemsSubject = new BehaviorSubject<CartItem[]>([]);
-  items$ = this.itemsSubject.asObservable();
+  private readonly _items = signal<CartItem[]>(this.loadFromStorage());
 
-  get items(): CartItem[] {
-    return this.itemsSubject.getValue();
+  /** Cart contents, read-only outside this service. */
+  readonly items = this._items.asReadonly();
+  readonly count = computed(() => this._items().reduce((sum, i) => sum + i.quantity, 0));
+  readonly subtotal = computed(() => this._items().reduce((sum, i) => sum + i.price * i.quantity, 0));
+
+  constructor() {
+    // Persist to localStorage whenever the cart changes, and survive refreshes.
+    effect(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this._items()));
+    });
   }
 
-  get count(): number {
-    return this.items.reduce((sum, item) => sum + item.quantity, 0);
-  }
-
-  get subtotal(): number {
-    return this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  }
-
-  addItem(product: Omit<CartItem, 'quantity'>): void {
-    const current = this.items;
-    const existing = current.find((i) => i.id === product.id);
-    if (existing) {
-      this.updateQuantity(product.id, existing.quantity + 1);
-    } else {
-      this.itemsSubject.next([...current, { ...product, quantity: 1 }]);
+  private loadFromStorage(): CartItem[] {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
     }
   }
 
+  addItem(product: Omit<CartItem, 'quantity'>): void {
+    this._items.update((current) => {
+      const existing = current.find((i) => i.id === product.id);
+      if (existing) {
+        return current.map((i) => (i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i));
+      }
+      return [...current, { ...product, quantity: 1 }];
+    });
+  }
+
   removeItem(id: number): void {
-    this.itemsSubject.next(this.items.filter((i) => i.id !== id));
+    this._items.update((current) => current.filter((i) => i.id !== id));
   }
 
   updateQuantity(id: number, quantity: number): void {
@@ -47,12 +56,10 @@ export class CartService {
       this.removeItem(id);
       return;
     }
-    this.itemsSubject.next(
-      this.items.map((i) => (i.id === id ? { ...i, quantity } : i))
-    );
+    this._items.update((current) => current.map((i) => (i.id === id ? { ...i, quantity } : i)));
   }
 
   clear(): void {
-    this.itemsSubject.next([]);
+    this._items.set([]);
   }
 }

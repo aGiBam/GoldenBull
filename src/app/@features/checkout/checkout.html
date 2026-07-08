@@ -60,21 +60,6 @@
           <h3 class="section-title">{{ t('checkout.paymentMethod') }}</h3>
           <div class="payment-options">
 
-            <div class="pay-option" [class.selected]="selectedPayment() === 'card'" (click)="selectPayment('card')">
-              <div class="pay-radio"><span></span></div>
-              <div class="pay-icon pay-icon--card">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-              </div>
-              <div class="pay-text">
-                <strong>{{ t('checkout.payCard') }}</strong>
-                <span>{{ t('checkout.payCardDesc') }}</span>
-              </div>
-              <div class="pay-badges">
-                <span class="pay-badge">VISA</span>
-                <span class="pay-badge">MC</span>
-              </div>
-            </div>
-
             <div class="pay-option" [class.selected]="selectedPayment() === 'cod'" (click)="selectPayment('cod')">
               <div class="pay-radio"><span></span></div>
               <div class="pay-icon pay-icon--cod">
@@ -116,6 +101,33 @@
               <span>{{ t('checkout.depositNote') }}</span>
             </div>
           }
+
+          @if (showsProofUpload) {
+            <div class="proof-upload">
+              <label class="proof-label">{{ t('checkout.proofLabel') }}</label>
+              <p class="proof-hint">{{ t('checkout.proofHint') }}</p>
+
+              @if (!proofDataUrl()) {
+                <label class="proof-dropzone">
+                  <input type="file" accept="image/*" (change)="onProofSelected($event)" hidden />
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>{{ t('checkout.proofChoose') }}</span>
+                </label>
+              } @else {
+                <div class="proof-preview">
+                  <img [src]="proofDataUrl()" [alt]="proofFileName() ?? 'proof'" />
+                  <div class="proof-preview-info">
+                    <span>{{ proofFileName() }}</span>
+                    <button type="button" class="proof-remove" (click)="clearProof()">{{ t('checkout.proofRemove') }}</button>
+                  </div>
+                </div>
+              }
+
+              @if (proofError()) {
+                <span class="field-error">{{ proofError() }}</span>
+              }
+            </div>
+          }
         </section>
 
       </div>
@@ -126,7 +138,7 @@
           <h3>{{ t('checkout.orderSummary') }}</h3>
 
           <div class="summary-items">
-            @for (item of (items$ | async) ?? []; track item.id) {
+            @for (item of items(); track item.id) {
               <div class="summary-item">
                 <img [src]="item.image" [alt]="item.name" />
                 <div class="summary-item-info">
@@ -142,21 +154,25 @@
 
           <div class="summary-row">
             <span>{{ t('cart.subtotal') }}</span>
-            <span>{{ subtotal }} EGP</span>
+            <span>{{ subtotal() }} EGP</span>
           </div>
 
           @if (needsDeposit) {
             <div class="summary-row deposit-row">
               <span>Deposit (20%)</span>
-              <span class="deposit-amount">{{ deposit }} EGP</span>
+              <span class="deposit-amount">{{ deposit() }} EGP</span>
             </div>
           }
 
           <div class="summary-divider"></div>
           <div class="summary-row total-row">
             <strong>{{ t('cart.total') }}</strong>
-            <strong>{{ subtotal }} EGP</strong>
+            <strong>{{ subtotal() }} EGP</strong>
           </div>
+
+          @if (errorMsg()) {
+            <p class="text-red-500 text-sm mt-2">{{ errorMsg() }}</p>
+          }
 
           <button class="btn-place-order" (click)="placeOrder()" [disabled]="loading()">
             @if (loading()) {

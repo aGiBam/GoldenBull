@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Postgres (Neon free tier) — see backend/README.md "Deploying for free" for
+// how to get a connection string. Local development also points at the same
+// Neon database via DATABASE_URL in .env, so you need an internet connection
+// to run the backend locally (a deliberate tradeoff: it means your data is
+// never lost to a host's ephemeral disk — see README for why that matters).
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// role: "customer" | "admin"
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("customer")
+  createdAt    DateTime @default(now())
+  orders       Order[]
+}
+
+// category: "belts" | "wallets" | "cardHolders" | "slippers" | "portefeuille" | "longWallets"
+model Product {
+  id         Int         @id @default(autoincrement())
+  nameEn     String
+  nameAr     String
+  descEn     String
+  descAr     String
+  price      Float
+  image      String
+  category   String
+  inStock    Boolean     @default(true)
+  colors     String // JSON-encoded ColorOption[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[]
+}
+
+// status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
+// paymentMethod: "cod" | "vodafone" | "instapay" — all pay-on-delivery / manual-transfer,
+// no online payment gateway is used, so there's no separate paymentStatus to track.
+// paymentProof: optional base64 data URL of a transfer screenshot the customer uploads
+// at checkout for vodafone/instapay orders, so the admin can verify payment manually
+// before confirming the order (see /admin/orders in the frontend).
+model Order {
+  id              String      @id @default(uuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  status          String      @default("pending")
+  paymentMethod   String
+  paymentProof    String?
+  subtotal        Float
+  deposit         Float
+  shippingName    String
+  shippingPhone   String
+  shippingAddress String
+  shippingCity    String
+  createdAt       DateTime    @default(now())
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  nameEn    String
+  nameAr    String
+  price     Float
+  quantity  Int
+  image     String
+}

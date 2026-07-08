@@ -8,7 +8,7 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-forgot-password',
   imports: [RouterLink, TranslocoModule, ReactiveFormsModule],
   templateUrl: './forgot-password.html',
-  styleUrl: '../auth/auth.css',
+  styleUrl: '../auth/auth.scss',
 })
 export class ForgotPassword {
   private fb = inject(FormBuilder);

@@ -4,14 +4,12 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { CartService } from '../../core/services/cart.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { AuthService } from '../../core/services/auth.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
   imports: [TranslocoModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  styleUrl: './navbar.scss',
 })
 export class Navbar {
   private transloco = inject(TranslocoService);
@@ -22,10 +20,7 @@ export class Navbar {
   isMenuOpen = signal(false);
   isScrolled = signal(false);
 
-  cartCount = toSignal(
-    this.cart.items$.pipe(map((items) => items.reduce((s, i) => s + i.quantity, 0))),
-    { initialValue: 0 }
-  );
+  cartCount = this.cart.count;
 
   get currentLang(): string {
     return this.transloco.getActiveLang();

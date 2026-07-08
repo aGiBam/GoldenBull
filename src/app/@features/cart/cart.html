@@ -2,7 +2,7 @@
   <div class="cart-container">
     <h1 class="cart-title">{{ t('cart.title') }}</h1>
 
-    @if ((items$ | async)?.length === 0 || !(items$ | async)?.length) {
+    @if (items().length === 0) {
       <div class="cart-empty">
         <div class="empty-icon">🛒</div>
         <h2>{{ t('cart.empty') }}</h2>
@@ -21,7 +21,7 @@
             <span></span>
           </div>
 
-          @for (item of (items$ | async) ?? []; track item.id) {
+          @for (item of items(); track item.id) {
             <div class="cart-item">
               <div class="cart-item-product">
                 <img [src]="item.image" [alt]="item.name" />
@@ -51,12 +51,12 @@
           <h3>{{ t('cart.orderSummary') }}</h3>
           <div class="summary-row">
             <span>{{ t('cart.subtotal') }}</span>
-            <span>{{ subtotal }} EGP</span>
+            <span>{{ subtotal() }} EGP</span>
           </div>
           <div class="summary-divider"></div>
           <div class="summary-row total">
             <span>{{ t('cart.total') }}</span>
-            <span>{{ subtotal }} EGP</span>
+            <span>{{ subtotal() }} EGP</span>
           </div>
           <a routerLink="/checkout" class="btn-primary checkout-btn">{{ t('cart.checkout') }}</a>
           <a routerLink="/products" class="continue-link">← {{ t('cart.continueShopping') }}</a>

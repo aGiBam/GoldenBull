@@ -9,7 +9,7 @@ import { DOCUMENT } from '@angular/common';
   selector: 'app-root',
   imports: [RouterOutlet, Navbar, Footer],
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styleUrl: './app.scss',
 })
 export class App {
   private transloco = inject(TranslocoService);

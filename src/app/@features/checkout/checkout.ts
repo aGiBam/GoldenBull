@@ -41,9 +41,10 @@ export class Checkout {
   subtotal = this.cart.subtotal;
   deposit = computed(() => Math.ceil(this.subtotal() * 0.2));
 
-  /** Vodafone Cash / InstaPay are manual bank transfers — a proof screenshot helps confirm faster. */
+  /** Every payment method requires a deposit to confirm the order, so the proof
+   * screenshot upload is offered regardless of which method is selected. */
   get showsProofUpload(): boolean {
-    return this.selectedPayment() === 'vodafone' || this.selectedPayment() === 'instapay';
+    return true;
   }
 
   get needsDeposit(): boolean {

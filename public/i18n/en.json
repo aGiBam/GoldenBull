@@ -203,6 +203,25 @@
     "viewProof": "View",
     "total": "Total",
     "date": "Date",
-    "noOrders": "No orders yet."
+    "noOrders": "No orders yet.",
+    "products": "Products",
+    "allProducts": "All Products",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "name": "Name",
+    "nameEn": "Name (English)",
+    "nameAr": "Name (Arabic)",
+    "descEn": "Description (English)",
+    "descAr": "Description (Arabic)",
+    "price": "Price",
+    "category": "Category",
+    "inStock": "In Stock",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "mainImage": "Main Image",
+    "addColor": "Add Color"
   }
 }

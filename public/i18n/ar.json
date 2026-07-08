@@ -203,6 +203,25 @@
     "viewProof": "عرض",
     "total": "الإجمالي",
     "date": "التاريخ",
-    "noOrders": "لا توجد طلبات بعد."
+    "noOrders": "لا توجد طلبات بعد.",
+    "products": "المنتجات",
+    "allProducts": "كل المنتجات",
+    "addProduct": "إضافة منتج",
+    "editProduct": "تعديل منتج",
+    "name": "الاسم",
+    "nameEn": "الاسم (إنجليزي)",
+    "nameAr": "الاسم (عربي)",
+    "descEn": "الوصف (إنجليزي)",
+    "descAr": "الوصف (عربي)",
+    "price": "السعر",
+    "category": "الفئة",
+    "inStock": "متوفر",
+    "actions": "إجراءات",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "mainImage": "الصورة الرئيسية",
+    "addColor": "إضافة لون"
   }
 }

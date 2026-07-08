@@ -40,4 +40,16 @@ export class ProductsService {
   getById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.base}/${id}`);
   }
+
+  create(product: Omit<Product, 'id'>): Observable<Product> {
+    return this.http.post<Product>(this.base, product);
+  }
+
+  update(id: number, product: Partial<Omit<Product, 'id'>>): Observable<Product> {
+    return this.http.put<Product>(`${this.base}/${id}`, product);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.base}/${id}`);
+  }
 }

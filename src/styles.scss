@@ -76,7 +76,7 @@ html {
     --color-brand-gold:  #9a6a05;
   }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
 
   body {
     font-family: 'Poppins', sans-serif;
@@ -84,6 +84,9 @@ html {
     color: var(--text-primary);
     transition: background-color 0.3s ease, color 0.3s ease;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
+    min-width: 300px;
   }
 
   [dir='rtl'] { font-family: 'Cairo', 'Poppins', sans-serif; }

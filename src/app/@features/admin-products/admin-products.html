@@ -1,0 +1,185 @@
+<div class="admin-products-page" *transloco="let t">
+  <div class="admin-header">
+    <h1>{{ t('admin.allProducts') }}</h1>
+    <button type="button" class="btn-add" (click)="openAddForm()">+ {{ t('admin.addProduct') }}</button>
+  </div>
+
+  @if (errorMsg()) {
+    <p class="error-banner">{{ errorMsg() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="state-msg">…</p>
+  } @else if (products().length === 0) {
+    <p class="state-msg">{{ t('products.noProducts') }}</p>
+  } @else {
+    <div class="products-table-wrap">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>{{ t('admin.name') }}</th>
+            <th>{{ t('admin.category') }}</th>
+            <th>{{ t('admin.price') }}</th>
+            <th>{{ t('admin.status') }}</th>
+            <th>{{ t('admin.actions') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr>
+              <td><img class="row-thumb" [src]="product.image" [alt]="product.nameEn" /></td>
+              <td>
+                <div class="cell-name">
+                  <strong>{{ product.nameEn }}</strong>
+                  <span>{{ product.nameAr }}</span>
+                </div>
+              </td>
+              <td>{{ t('products.' + product.category) }}</td>
+              <td>{{ product.price }} EGP</td>
+              <td>
+                @if (product.inStock) {
+                  <span class="status-badge in-stock">{{ t('admin.inStock') }}</span>
+                } @else {
+                  <span class="status-badge out-of-stock">{{ t('products.outOfStock') }}</span>
+                }
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button type="button" class="btn-edit" (click)="openEditForm(product)">{{ t('admin.edit') }}</button>
+                  <button
+                    type="button"
+                    class="btn-delete"
+                    [disabled]="deletingId() === product.id"
+                    (click)="deleteProduct(product)"
+                  >
+                    {{ t('admin.delete') }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (showForm()) {
+    <div class="form-overlay" (click)="closeForm()">
+      <div class="form-panel" (click)="$event.stopPropagation()">
+        <div class="form-panel-header">
+          <h2>{{ editingId() ? t('admin.editProduct') : t('admin.addProduct') }}</h2>
+          <button type="button" class="form-close" (click)="closeForm()">×</button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="save()" class="product-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>{{ t('admin.nameEn') }}</label>
+              <input type="text" formControlName="nameEn" />
+            </div>
+            <div class="form-group">
+              <label>{{ t('admin.nameAr') }}</label>
+              <input type="text" formControlName="nameAr" dir="rtl" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>{{ t('admin.descEn') }}</label>
+              <textarea formControlName="descEn" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>{{ t('admin.descAr') }}</label>
+              <textarea formControlName="descAr" rows="2" dir="rtl"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>{{ t('admin.price') }} (EGP)</label>
+              <input type="number" formControlName="price" min="1" />
+            </div>
+            <div class="form-group">
+              <label>{{ t('admin.category') }}</label>
+              <select formControlName="category">
+                @for (c of categories; track c) {
+                  <option [value]="c">{{ t('products.' + c) }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" formControlName="inStock" />
+            {{ t('admin.inStock') }}
+          </label>
+
+          <div class="form-group">
+            <label>{{ t('admin.mainImage') }}</label>
+            <div class="image-picker">
+              @if (mainImage()) {
+                <img class="image-preview" [src]="mainImage()" alt="preview" />
+              }
+              <label class="file-btn">
+                <input type="file" accept="image/*" hidden (change)="onMainImageSelected($event)" />
+                {{ t('checkout.proofChoose') }}
+              </label>
+            </div>
+          </div>
+
+          @if (imageError()) {
+            <span class="field-error">{{ imageError() }}</span>
+          }
+
+          <div class="colors-section">
+            <div class="colors-header">
+              <label>{{ t('products.color') }}</label>
+              <button type="button" class="btn-add-color" (click)="addColorRow()">+ {{ t('admin.addColor') }}</button>
+            </div>
+
+            @for (color of colors(); track $index) {
+              <div class="color-row">
+                <input
+                  type="text"
+                  [placeholder]="t('admin.nameEn')"
+                  [value]="color.name"
+                  (input)="updateColorField($index, 'name', $any($event.target).value)"
+                />
+                <input
+                  type="text"
+                  [placeholder]="t('admin.nameAr')"
+                  dir="rtl"
+                  [value]="color.nameAr"
+                  (input)="updateColorField($index, 'nameAr', $any($event.target).value)"
+                />
+                <input
+                  type="color"
+                  class="color-swatch-input"
+                  [value]="color.hex"
+                  (input)="updateColorField($index, 'hex', $any($event.target).value)"
+                />
+                <label class="file-btn small">
+                  <input type="file" accept="image/*" hidden (change)="onColorImageSelected($event, $index)" />
+                  @if (color.image) {
+                    <img class="color-thumb" [src]="color.image" alt="" />
+                  } @else {
+                    {{ t('checkout.proofChoose') }}
+                  }
+                </label>
+                <button type="button" class="btn-remove-color" (click)="removeColorRow($index)">×</button>
+              </div>
+            }
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="closeForm()">{{ t('admin.cancel') }}</button>
+            <button type="submit" class="btn-save" [disabled]="saving()">
+              {{ saving() ? '…' : t('admin.save') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

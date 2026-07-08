@@ -81,3 +81,25 @@ authRouter.patch('/me', requireAuth, async (req: AuthedRequest, res, next) => {
     next(err);
   }
 });
+
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(6),
+});
+
+authRouter.patch('/me/password', requireAuth, async (req: AuthedRequest, res, next) => {
+  try {
+    const body = changePasswordSchema.parse(req.body);
+    const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
+    if (!user) throw new ApiError(404, 'User not found');
+
+    const valid = await bcrypt.compare(body.currentPassword, user.passwordHash);
+    if (!valid) throw new ApiError(401, 'Current password is incorrect');
+
+    const passwordHash = await bcrypt.hash(body.newPassword, 10);
+    await prisma.user.update({ where: { id: user.id }, data: { passwordHash } });
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});

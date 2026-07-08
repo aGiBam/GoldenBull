@@ -6,6 +6,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { OrdersService, OrderDto } from '../../core/services/orders.service';
+import { getErrorMessage } from '../../core/utils/http-error';
 
 @Component({
   selector: 'app-profile',
@@ -32,6 +33,16 @@ export class Profile {
     email: [this.auth.user()?.email ?? '', [Validators.required, Validators.email]],
   });
 
+  passwordSaving = signal(false);
+  passwordSaved = signal(false);
+  passwordError = signal('');
+
+  passwordForm = this.fb.group({
+    currentPassword: ['', Validators.required],
+    newPassword: ['', [Validators.required, Validators.minLength(6)]],
+    confirmPassword: ['', Validators.required],
+  });
+
   async saveProfile() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -47,6 +58,30 @@ export class Profile {
       this.saveError.set('Could not save changes — please try again.');
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  async changePassword() {
+    this.passwordError.set('');
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+    const { currentPassword, newPassword, confirmPassword } = this.passwordForm.value;
+    if (newPassword !== confirmPassword) {
+      this.passwordError.set('New password and confirmation do not match.');
+      return;
+    }
+    this.passwordSaving.set(true);
+    try {
+      await this.auth.changePassword(currentPassword!, newPassword!);
+      this.passwordForm.reset();
+      this.passwordSaved.set(true);
+      setTimeout(() => this.passwordSaved.set(false), 2500);
+    } catch (e) {
+      this.passwordError.set(getErrorMessage(e, 'Could not change password — please try again.'));
+    } finally {
+      this.passwordSaving.set(false);
     }
   }
 

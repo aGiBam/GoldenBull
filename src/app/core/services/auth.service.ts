@@ -71,6 +71,12 @@ export class AuthService {
     return updated;
   }
 
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    await firstValueFrom(
+      this.http.patch(`${this.base}/me/password`, { currentPassword, newPassword })
+    );
+  }
+
   logout() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);

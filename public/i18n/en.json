@@ -16,7 +16,8 @@
     "explore": "Explore All",
     "tagline1": "Crafted to Last. Premium Leather Goods.",
     "tagline2": "Every Belt, A Statement of Character.",
-    "tagline3": "Your Everyday Companion, Built to Last."
+    "tagline3": "Your Everyday Companion, Built to Last.",
+    "scroll": "SCROLL"
   },
   "features": {
     "handmade": "100% Handmade",
@@ -131,7 +132,9 @@
     "faq": "FAQ",
     "contact": "Contact Us",
     "custom": "Custom Orders",
-    "myAccount": "My Account"
+    "myAccount": "My Account",
+    "chat": "Chat",
+    "chatWhatsapp": "Chat on WhatsApp"
   },
   "promo": {
     "badge": "Limited Offer",
@@ -184,6 +187,10 @@
     "noOrders": "No orders yet",
     "noOrdersSub": "Your order history will appear here",
     "memberSince": "Member since",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
     "dangerZone": "Danger Zone",
     "deleteAccount": "Delete Account",
     "deleteWarning": "This action is permanent and cannot be undone.",

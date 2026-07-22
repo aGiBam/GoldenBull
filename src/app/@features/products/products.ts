@@ -23,12 +23,12 @@ export class Products implements OnInit {
   readonly filters = ['belts', 'wallets', 'longWallets', 'portefeuille', 'cardHolders', 'slippers'];
 
   readonly filterIcons: Record<string, string> = {
-    belts: '🪢',
+    belts: '🎗️',
     wallets: '👛',
     longWallets: '💼',
     portefeuille: '👜',
     cardHolders: '💳',
-    slippers: '🩴',
+    slippers: '🥿',
   };
 
   /**

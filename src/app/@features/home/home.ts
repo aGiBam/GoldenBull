@@ -22,7 +22,6 @@ export class Home implements OnInit, OnDestroy {
   ];
 
   activeSlide = signal(0);
-  promoVisible = signal(false);
 
   valueBars = [
     { key: 'handmade', icon: '✋' },
@@ -47,20 +46,26 @@ export class Home implements OnInit, OnDestroy {
   );
 
   testimonials = [
-    { name: 'Ahmed K.',   text: 'The belt I ordered is absolutely stunning. You can feel the quality in every stitch.' },
-    { name: 'Sara M.',    text: "My husband loves the wallet. It's slim, elegant and the leather smell is amazing." },
-    { name: 'Youssef T.', text: 'Ordered a custom card holder and it exceeded all expectations. Fast delivery.' },
+    { key: 'testimonial1' },
+    { key: 'testimonial2' },
+    { key: 'testimonial3' },
   ];
 
   ngOnInit() {
     this._timer = setInterval(() => {
       this.activeSlide.update(s => (s + 1) % this.heroSlides.length);
     }, 5500);
-    // Show promo popup after 3 seconds
-    setTimeout(() => this.promoVisible.set(true), 3000);
   }
 
   ngOnDestroy() { if (this._timer) clearInterval(this._timer); }
+
+  /** Smooth-scrolls just for this one link, since scroll-behavior: smooth was
+   * removed globally (it was making router navigation look like scrolling —
+   * see styles.scss). */
+  scrollToValueBar(event: Event) {
+    event.preventDefault();
+    document.getElementById('value-bar')?.scrollIntoView({ behavior: 'smooth' });
+  }
 
   goToSlide(i: number) {
     this.activeSlide.set(i);
@@ -70,5 +75,4 @@ export class Home implements OnInit, OnDestroy {
     }, 5500);
   }
 
-  closePromo() { this.promoVisible.set(false); }
 }

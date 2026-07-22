@@ -1,4 +1,5 @@
-<app-navbar></app-navbar>
+<app-announcement-bar></app-announcement-bar>
+<app-navbar [class.with-announcement]="announcement.visible()"></app-navbar>
 <main>
   <router-outlet></router-outlet>
 </main>

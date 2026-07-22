@@ -36,7 +36,7 @@
 
     <!-- Scroll indicator -->
     <div class="hero-scroll-wrap">
-      <a href="#value-bar" class="hero-scroll">
+      <a href="#value-bar" class="hero-scroll" (click)="scrollToValueBar($event)">
         <span class="scroll-text">{{ t('hero.scroll') }}</span>
         <div class="scroll-line"></div>
       </a>
@@ -65,19 +65,6 @@
         </div>
       </div>
     }
-  </div>
-
-  <!-- ===== MARQUEE STRIP ===== -->
-  <div class="marquee-strip">
-    <div class="marquee-track">
-      <span>GOLDEN BULL</span><span class="marquee-dot">◆</span> <span>HANDCRAFTED LEATHER</span
-      ><span class="marquee-dot">◆</span> <span>MADE IN EGYPT</span
-      ><span class="marquee-dot">◆</span> <span>PREMIUM QUALITY</span
-      ><span class="marquee-dot">◆</span> <span>GOLDEN BULL</span><span class="marquee-dot">◆</span>
-      <span>HANDCRAFTED LEATHER</span><span class="marquee-dot">◆</span> <span>MADE IN EGYPT</span
-      ><span class="marquee-dot">◆</span> <span>PREMIUM QUALITY</span
-      ><span class="marquee-dot">◆</span>
-    </div>
   </div>
 
   <!-- ===== CATEGORY GRID ===== -->
@@ -147,11 +134,11 @@
     <p class="section-eyebrow centered-eyebrow">{{ t('hero.badge') }}</p>
     <h2>{{ t('home.testimonials') }}</h2>
     <div class="testimonials-grid">
-      @for (testimonial of testimonials; track testimonial.name) {
+      @for (testimonial of testimonials; track testimonial.key) {
         <div class="testimonial-card">
           <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"{{ testimonial.text }}"</p>
-          <p class="testimonial-author">— {{ testimonial.name }}</p>
+          <p class="testimonial-text">"{{ t('home.' + testimonial.key + 'Text') }}"</p>
+          <p class="testimonial-author">— {{ t('home.' + testimonial.key + 'Name') }}</p>
         </div>
       }
     </div>
@@ -173,26 +160,3 @@
   </svg>
   <span class="wa-label">{{ t('footer.chat') }}</span>
 </a>
-
-<ng-container *transloco="let t">
-<!-- ===== PROMO POPUP ===== -->
-@if (promoVisible()) {
-  <div class="promo-backdrop" (click)="closePromo()">
-    <div class="promo-modal" (click)="$event.stopPropagation()">
-      <button class="promo-close" (click)="closePromo()">✕</button>
-      <div class="promo-logo">
-        <img src="images/logo.png" alt="Golden Bull" />
-      </div>
-      <p class="promo-eyebrow">{{ t('promo.badge') }}</p>
-      <h2 class="promo-title">{{ t('promo.heading') }}</h2>
-      <p class="promo-sub-line">{{ t('promo.sub') }}</p>
-      
-      <div class="promo-form">
-        <input type="email" [placeholder]="t('promo.placeholder')" />
-        <button>{{ t('promo.cta') }}</button>
-      </div>
-      <button class="promo-skip" (click)="closePromo()">{{ t('promo.skip') }}</button>
-    </div>
-  </div>
-}
-</ng-container>

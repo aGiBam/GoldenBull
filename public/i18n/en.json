@@ -1,4 +1,8 @@
 {
+  "announcement": {
+    "message": "10% OFF your first order — use code WELCOME10 at checkout",
+    "close": "Dismiss"
+  },
   "nav": {
     "home": "Home",
     "products": "Products",
@@ -8,7 +12,7 @@
     "register": "Register"
   },
   "hero": {
-    "badge": "Handcrafted in Egypt",
+    "badge": "Crafted with Skill in Egypt",
     "subtitle": "Pure Leather,",
     "title": "Built to Last.",
     "description": "Crafted to last. Premium leather goods.",
@@ -20,8 +24,8 @@
     "scroll": "SCROLL"
   },
   "features": {
-    "handmade": "100% Handmade",
-    "handmadeDesc": "Every piece is crafted by hand with love and precision",
+    "handmade": "Skilled Craftsmanship",
+    "handmadeDesc": "Every piece is made with skill, care, and precision",
     "genuine": "Genuine Leather",
     "genuineDesc": "We use only the finest quality natural leather",
     "quality": "Premium Quality",
@@ -31,7 +35,7 @@
   },
   "categories": {
     "title": "Our Collections",
-    "subtitle": "Explore our handcrafted leather categories",
+    "subtitle": "Explore our expertly crafted leather categories",
     "explore": "Shop Now",
     "belts": "Belts",
     "wallets": "Wallets",
@@ -39,16 +43,16 @@
     "slippers": "Slippers",
     "portefeuille": "Portefeuille",
     "longWallets": "Long Wallets",
-    "beltsDesc": "Premium handcrafted leather belts",
+    "beltsDesc": "Premium leather belts, expertly crafted",
     "walletsDesc": "Slim & classic leather wallets",
     "cardHoldersDesc": "Minimalist card holders & cases",
-    "slippersDesc": "Handmade leather slippers",
+    "slippersDesc": "Leather slippers, crafted with care",
     "portefeuilleDesc": "Elegant women's leather wallets",
     "longWalletsDesc": "Spacious men's long wallets"
   },
   "products": {
     "title": "All Products",
-    "subtitle": "Handcrafted leather goods made with care",
+    "subtitle": "Leather goods crafted with skill and care",
     "all": "All",
     "belts": "Belts",
     "wallets": "Wallets",
@@ -86,7 +90,17 @@
     "contactInfo": "Contact Information",
     "fullName": "Full Name",
     "phone": "Phone Number",
+    "phoneInvalid": "Enter a valid Egyptian mobile number (e.g. 010XXXXXXXX)",
     "address": "Delivery Address",
+    "deliveryAddress": "Delivery Address",
+    "governorate": "Governorate",
+    "selectGovernorate": "Select governorate",
+    "street": "Street Address",
+    "building": "Building No.",
+    "floor": "Floor No.",
+    "apartment": "Apartment No.",
+    "landmark": "Landmark",
+    "optional": "optional",
     "city": "City",
     "paymentMethod": "Payment Method",
     "payCOD": "Cash on Delivery",
@@ -98,8 +112,14 @@
     "depositNote": "A deposit of 20% is required to confirm your order. We will contact you with payment details.",
     "proofLabel": "Payment Proof",
     "proofHint": "Upload a screenshot of your transfer so we can confirm your order faster (optional).",
-    "proofChoose": "Choose a screenshot",
+    "proofHintSmall": "PNG or JPG, under 4MB",
+    "proofChoose": "Upload deposit screenshot",
+    "proofUploaded": "Uploaded",
     "proofRemove": "Remove",
+    "promoPlaceholder": "Promo code",
+    "promoApply": "Apply",
+    "discount": "Discount",
+    "depositLabel": "Deposit (20%)",
     "orderSummary": "Order Summary",
     "placeOrder": "Place Order",
     "orderPlaced": "Order Placed!",
@@ -108,13 +128,19 @@
   },
   "home": {
     "ourStory": "Our Story",
-    "craftTitle": "Made by Hand, Worn with Pride",
-    "craftDesc": "Every stitch, every cut — crafted in Egypt with passion and precision.",
+    "craftTitle": "Crafted with Skill, Worn with Pride",
+    "craftDesc": "Every stitch, every cut — made in Egypt with skilled craftsmanship, premium materials, and precision.",
     "shopCollection": "Shop the Collection",
-    "testimonials": "What Our Customers Say"
+    "testimonials": "What Our Customers Say",
+    "testimonial1Name": "Mona A.",
+    "testimonial1Text": "The quality is outstanding — you can feel the craftsmanship the moment you hold it. My belt still looks brand new after a year.",
+    "testimonial2Name": "Karim S.",
+    "testimonial2Text": "Ordered a wallet as a gift and the finishing was beautiful. Delivery took a bit longer than expected but well worth the wait.",
+    "testimonial3Name": "Yara M.",
+    "testimonial3Text": "Genuine leather, precise stitching, and a design that feels premium without the premium price. Will definitely order again."
   },
   "footer": {
-    "tagline": "Genuine leather goods handcrafted in Egypt. Quality that lasts a lifetime.",
+    "tagline": "Genuine leather goods, expertly crafted in Egypt. Quality that lasts a lifetime.",
     "rights": "All rights reserved.",
     "madeWith": "Made with ❤ in Egypt",
     "newsletterTitle": "Subscribe & Get 10% Off",
@@ -128,6 +154,7 @@
     "returns": "Returns & Exchanges",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
+    "reviews": "Reviews Policy",
     "help": "Get Help",
     "faq": "FAQ",
     "contact": "Contact Us",

@@ -1,0 +1,15 @@
+@if (announcement.visible()) {
+  <div class="announcement-bar" *transloco="let t">
+    <div class="announcement-track">
+      <span>{{ t('announcement.message') }}</span>
+      <span class="announcement-dot">◆</span>
+      <span>{{ t('announcement.message') }}</span>
+      <span class="announcement-dot">◆</span>
+      <span>{{ t('announcement.message') }}</span>
+      <span class="announcement-dot">◆</span>
+      <span>{{ t('announcement.message') }}</span>
+      <span class="announcement-dot">◆</span>
+    </div>
+    <button type="button" class="announcement-close" (click)="announcement.dismiss()" [attr.aria-label]="t('announcement.close')">✕</button>
+  </div>
+}

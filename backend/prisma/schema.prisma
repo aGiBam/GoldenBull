@@ -46,21 +46,43 @@ model Product {
 // paymentProof: optional base64 data URL of a transfer screenshot the customer uploads
 // at checkout for vodafone/instapay orders, so the admin can verify payment manually
 // before confirming the order (see /admin/orders in the frontend).
+// userId is nullable to support guest checkout (no account required to order).
 model Order {
-  id              String      @id @default(uuid())
-  userId          String
-  user            User        @relation(fields: [userId], references: [id])
-  status          String      @default("pending")
-  paymentMethod   String
-  paymentProof    String?
-  subtotal        Float
-  deposit         Float
-  shippingName    String
-  shippingPhone   String
-  shippingAddress String
-  shippingCity    String
-  createdAt       DateTime    @default(now())
-  items           OrderItem[]
+  id                  String      @id @default(uuid())
+  userId              String?
+  user                User?       @relation(fields: [userId], references: [id])
+  status              String      @default("pending")
+  paymentMethod       String
+  paymentProof        String?
+  subtotal            Float
+  deposit             Float
+  discountCode        String?
+  discountAmount      Float       @default(0)
+  shippingName        String
+  shippingPhone       String
+  shippingGovernorate String      @default("")
+  shippingCity        String
+  shippingStreet      String      @default("")
+  shippingBuilding    String      @default("")
+  shippingFloor       String      @default("")
+  shippingApartment   String      @default("")
+  shippingLandmark    String?
+  createdAt           DateTime    @default(now())
+  items               OrderItem[]
+}
+
+// A simple promo-code system: percent off subtotal, can be turned off with
+// `active` without deleting it, optional expiry/usage cap so it's a real,
+// working discount (not just marketing copy that never applies at checkout).
+model DiscountCode {
+  id         Int       @id @default(autoincrement())
+  code       String    @unique
+  percent    Float
+  active     Boolean   @default(true)
+  expiresAt  DateTime?
+  maxUses    Int?
+  usedCount  Int       @default(0)
+  createdAt  DateTime  @default(now())
 }
 
 model OrderItem {

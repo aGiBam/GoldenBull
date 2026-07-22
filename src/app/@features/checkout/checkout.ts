@@ -1,10 +1,11 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslocoModule } from '@jsverse/transloco';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CartService } from '../../core/services/cart.service';
 import { OrdersService } from '../../core/services/orders.service';
 import { getErrorMessage } from '../../core/utils/http-error';
+import { GOVERNORATES } from '../../core/constants/governorates';
 
 type PaymentMethod = 'cod' | 'vodafone' | 'instapay';
 
@@ -12,15 +13,21 @@ const MAX_PROOF_BYTES = 4 * 1024 * 1024; // 4MB, well under the backend's 5MB ca
 
 @Component({
   selector: 'app-checkout',
-  imports: [RouterLink, TranslocoModule, ReactiveFormsModule],
+  imports: [RouterLink, TranslocoModule, ReactiveFormsModule, FormsModule],
   templateUrl: './checkout.html',
   styleUrl: './checkout.scss',
 })
 export class Checkout {
   private fb = inject(FormBuilder);
   private orders = inject(OrdersService);
+  private transloco = inject(TranslocoService);
   cart = inject(CartService);
   items = this.cart.items;
+  governorates = GOVERNORATES;
+
+  get currentLang(): string {
+    return this.transloco.getActiveLang();
+  }
 
   selectedPayment = signal<PaymentMethod>('cod');
   orderPlaced = signal(false);
@@ -31,15 +38,28 @@ export class Checkout {
   proofFileName = signal<string | null>(null);
   proofError = signal('');
 
+  // Discount code
+  promoInput = signal('');
+  promoApplied = signal<{ code: string; percent: number; amount: number } | null>(null);
+  promoChecking = signal(false);
+  promoError = signal('');
+
   form = this.fb.group({
     fullName: ['', Validators.required],
     phone: ['', [Validators.required, Validators.pattern(/^01[0-9]{9}$/)]],
-    address: ['', Validators.required],
+    governorate: ['', Validators.required],
     city: ['', Validators.required],
+    street: ['', Validators.required],
+    building: ['', Validators.required],
+    floor: ['', Validators.required],
+    apartment: ['', Validators.required],
+    landmark: [''],
   });
 
   subtotal = this.cart.subtotal;
-  deposit = computed(() => Math.ceil(this.subtotal() * 0.2));
+  discountAmount = computed(() => this.promoApplied()?.amount ?? 0);
+  totalAfterDiscount = computed(() => Math.max(0, this.subtotal() - this.discountAmount()));
+  deposit = computed(() => Math.ceil(this.totalAfterDiscount() * 0.2));
 
   /** Every payment method requires a deposit to confirm the order, so the proof
    * screenshot upload is offered regardless of which method is selected. */
@@ -55,6 +75,30 @@ export class Checkout {
 
   selectPayment(method: PaymentMethod) {
     this.selectedPayment.set(method);
+  }
+
+  applyPromo() {
+    const code = this.promoInput().trim();
+    if (!code) return;
+    this.promoChecking.set(true);
+    this.promoError.set('');
+    this.orders.validateDiscount(code, this.subtotal()).subscribe({
+      next: (res) => {
+        this.promoApplied.set(res);
+        this.promoChecking.set(false);
+      },
+      error: (e) => {
+        this.promoApplied.set(null);
+        this.promoError.set(getErrorMessage(e, 'Invalid discount code.'));
+        this.promoChecking.set(false);
+      },
+    });
+  }
+
+  removePromo() {
+    this.promoApplied.set(null);
+    this.promoInput.set('');
+    this.promoError.set('');
   }
 
   onProofSelected(event: Event) {
@@ -102,10 +146,16 @@ export class Checkout {
     const payload = {
       paymentMethod: this.selectedPayment(),
       ...(this.showsProofUpload && this.proofDataUrl() ? { paymentProof: this.proofDataUrl()! } : {}),
+      ...(this.promoApplied() ? { discountCode: this.promoApplied()!.code } : {}),
       shippingName: this.form.value.fullName!,
       shippingPhone: this.form.value.phone!,
-      shippingAddress: this.form.value.address!,
+      shippingGovernorate: this.form.value.governorate!,
       shippingCity: this.form.value.city!,
+      shippingStreet: this.form.value.street!,
+      shippingBuilding: this.form.value.building!,
+      shippingFloor: this.form.value.floor!,
+      shippingApartment: this.form.value.apartment!,
+      ...(this.form.value.landmark ? { shippingLandmark: this.form.value.landmark } : {}),
       items: this.items().map((i) => ({
         productId: i.id,
         nameEn: i.name,

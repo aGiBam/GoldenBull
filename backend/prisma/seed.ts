@@ -72,6 +72,7 @@ async function main() {
   await prisma.order.deleteMany();
   await prisma.product.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.discountCode.deleteMany();
 
   for (const p of products) {
     await prisma.product.create({ data: { ...p, colors: JSON.stringify(p.colors) } });
@@ -95,7 +96,14 @@ async function main() {
     },
   });
 
-  console.log(`Seeded ${products.length} products and 2 users.`);
+  // The real, working code behind the site's "10% off" messaging — the
+  // announcement bar/footer should only ever advertise a code that actually
+  // applies here, so this stays in sync with whatever copy references it.
+  await prisma.discountCode.create({
+    data: { code: 'WELCOME10', percent: 10, active: true },
+  });
+
+  console.log(`Seeded ${products.length} products, 2 users, and 1 discount code.`);
 }
 
 main()

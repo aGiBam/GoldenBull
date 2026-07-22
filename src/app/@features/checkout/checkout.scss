@@ -60,7 +60,8 @@
   color: var(--text-secondary);
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -69,9 +70,14 @@
   outline: none;
   border-radius: 6px;
   transition: border-color 0.2s;
+  font-family: inherit;
+  width: 100%;
 }
 
-.form-group input:focus { border-color: var(--color-gold); }
+.form-group input:focus,
+.form-group select:focus { border-color: var(--color-gold); }
+
+.optional-tag { color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
 
 .field-error {
   color: #e05757;
@@ -199,20 +205,49 @@
 .proof-dropzone {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 1px dashed var(--border-color);
-  border-radius: 6px;
+  gap: 0.85rem;
+  padding: 1.1rem 1.25rem;
+  border: 2px dashed var(--color-gold);
+  border-radius: 8px;
   cursor: pointer;
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  transition: border-color 0.2s, color 0.2s;
+  color: var(--color-brand-gold);
+  background: rgba(200,146,10,0.06);
+  transition: border-color 0.2s, background 0.2s;
 }
 
 .proof-dropzone:hover {
-  border-color: var(--color-gold);
-  color: var(--color-brand-gold);
+  border-color: var(--color-gold-light);
+  background: rgba(200,146,10,0.12);
+}
+
+.proof-dropzone-icon {
+  width: 40px; height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: #0a0704;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.proof-dropzone-text { display: flex; flex-direction: column; gap: 0.15rem; text-align: left; }
+[dir='rtl'] .proof-dropzone-text { text-align: right; }
+.proof-dropzone-text strong { font-size: 0.88rem; color: var(--text-primary); }
+.proof-dropzone-text small { font-size: 0.74rem; color: var(--text-muted); }
+
+.proof-uploaded-badge {
+  display: inline-flex;
+  width: fit-content;
+  color: #4caf50;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.proof-filename {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .proof-preview {
@@ -325,6 +360,65 @@
 
 .deposit-row { color: var(--color-brand-gold); }
 .deposit-amount { font-weight: 700; }
+.discount-row { color: #4caf50; }
+
+/* Promo code */
+.promo-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.promo-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  outline: none;
+}
+
+.promo-input:focus { border-color: var(--color-gold); }
+
+.promo-apply-btn {
+  background: var(--bg-card-hover);
+  border: 1px solid var(--color-gold);
+  color: var(--color-brand-gold);
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.promo-apply-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.promo-applied-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: rgba(76,175,80,0.1);
+  border: 1px solid rgba(76,175,80,0.3);
+  border-radius: 6px;
+  color: #4caf50;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.promo-remove-btn {
+  background: transparent;
+  border: none;
+  color: #4caf50;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .total-row {
   font-size: 1rem;

@@ -18,9 +18,18 @@ export class Products implements OnInit {
   private cart = inject(CartService);
   private productsService = inject(ProductsService);
 
-  activeFilter = signal<string>('all');
+  activeFilter = signal<string>('belts');
 
-  readonly filters = ['all', 'belts', 'wallets', 'longWallets', 'portefeuille', 'cardHolders', 'slippers'];
+  readonly filters = ['belts', 'wallets', 'longWallets', 'portefeuille', 'cardHolders', 'slippers'];
+
+  readonly filterIcons: Record<string, string> = {
+    belts: '🪢',
+    wallets: '👛',
+    longWallets: '💼',
+    portefeuille: '👜',
+    cardHolders: '💳',
+    slippers: '🩴',
+  };
 
   /**
    * Re-fetches from the API whenever the filter changes. switchMap cancels any

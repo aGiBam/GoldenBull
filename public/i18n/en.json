@@ -123,6 +123,8 @@
     "promoApply": "Apply",
     "discount": "Discount",
     "depositLabel": "Deposit (20%)",
+    "shippingFee": "Estimated Delivery Fee",
+    "shippingFeeNote": "Paid to the courier on delivery — not part of the online total.",
     "orderSummary": "Order Summary",
     "placeOrder": "Place Order",
     "orderPlaced": "Order Placed!",

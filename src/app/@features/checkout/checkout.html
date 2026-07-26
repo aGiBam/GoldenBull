@@ -212,9 +212,14 @@
                 [ngModel]="promoInput()"
                 (ngModelChange)="promoInput.set($event)"
                 [ngModelOptions]="{ standalone: true }"
+                [disabled]="promoChecking()"
               />
               <button type="button" class="promo-apply-btn" [disabled]="promoChecking() || !promoInput()" (click)="applyPromo()">
-                {{ promoChecking() ? '…' : t('checkout.promoApply') }}
+                @if (promoChecking()) {
+                  <span class="promo-spinner"></span>
+                } @else {
+                  {{ t('checkout.promoApply') }}
+                }
               </button>
             </div>
             @if (promoError()) {
@@ -246,6 +251,14 @@
               <span>{{ t('checkout.depositLabel') }}</span>
               <span class="deposit-amount">{{ deposit() }} EGP</span>
             </div>
+          }
+
+          @if (selectedGovernorateFee() > 0) {
+            <div class="summary-row shipping-row">
+              <span>{{ t('checkout.shippingFee') }}</span>
+              <span>~{{ selectedGovernorateFee() }} EGP</span>
+            </div>
+            <p class="shipping-fee-note">{{ t('checkout.shippingFeeNote') }}</p>
           }
 
           <div class="summary-divider"></div>

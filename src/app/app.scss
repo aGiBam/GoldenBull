@@ -1,0 +1,17 @@
+/* Pins the footer to the bottom and keeps the navbar at the top regardless of
+   how much/little content the current page has — without this, a page whose
+   data hasn't loaded yet is very short, so the footer renders right under the
+   navbar, then visibly jumps down once the async data arrives and the page
+   grows. min-height 100vh + main flex:1 means the layout is always at least a
+   full screen tall from the first paint, so nothing jumps. */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}

@@ -4,6 +4,7 @@ import { Navbar } from './@shared/navbar/navbar';
 import { Footer } from './@shared/footer/footer';
 import { AnnouncementBar } from './@shared/announcement-bar/announcement-bar';
 import { CartDrawer } from './@shared/cart-drawer/cart-drawer';
+import { TopProgressBar } from './@shared/top-progress-bar/top-progress-bar';
 import { AnnouncementService } from './core/services/announcement.service';
 import { TranslocoService } from '@jsverse/transloco';
 import { DOCUMENT } from '@angular/common';
@@ -11,7 +12,7 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, Footer, AnnouncementBar, CartDrawer],
+  imports: [RouterOutlet, Navbar, Footer, AnnouncementBar, CartDrawer, TopProgressBar],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

@@ -115,6 +115,61 @@
 .status-badge.in-stock { color: #4caf50; background: rgba(76,175,80,0.12); }
 .status-badge.out-of-stock { color: #ff9a7a; background: rgba(255,154,122,0.12); }
 
+.stock-count {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.stock-grid-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stock-grid-section > label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.stock-total-hint { color: var(--color-gold); font-weight: 600; }
+
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.6rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.8rem;
+}
+
+.stock-grid-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.stock-grid-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stock-input {
+  width: 70px;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
 .row-actions {
   display: flex;
   gap: 0.5rem;

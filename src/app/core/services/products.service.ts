@@ -10,6 +10,12 @@ export interface ColorOption {
   image?: string;
 }
 
+export interface ProductVariant {
+  color: string;
+  size: string | null;
+  stock: number;
+}
+
 export interface Product {
   id: number;
   nameEn: string;
@@ -22,6 +28,7 @@ export interface Product {
   descAr: string;
   colors: ColorOption[];
   sizes: string[];
+  variants: ProductVariant[];
 }
 
 @Injectable({ providedIn: 'root' })

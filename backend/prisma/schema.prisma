@@ -39,6 +39,22 @@ model Product {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   orderItems OrderItem[]
+  variants   ProductVariant[]
+}
+
+// Per-color+size stock count (e.g. Black/42 = 5 pieces, Brown/41 = 0). size is
+// null for sizeless products (belts, wallets, ...) so there's just one row
+// per color in that case. This replaces the old single "In Stock: yes/no"
+// checkbox with real per-piece inventory once a product has colors/sizes.
+model ProductVariant {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color     String
+  size      String?
+  stock     Int     @default(0)
+
+  @@unique([productId, color, size])
 }
 
 // status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"

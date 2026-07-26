@@ -19,9 +19,14 @@
     } @else {
       <div class="products-grid">
         @for (product of filteredProducts(); track product.id) {
-          <a [routerLink]="['/products', product.id]" class="product-card" [class.out-of-stock]="!product.inStock">
+          <a
+            [routerLink]="['/products', product.id]"
+            [queryParams]="detailQueryParams(product)"
+            class="product-card"
+            [class.out-of-stock]="!product.inStock"
+          >
             <div class="product-image-wrap">
-              <img [src]="product.image" [alt]="product.nameEn" loading="lazy" />
+              <img [src]="cardImage(product)" [alt]="product.nameEn" loading="lazy" />
               @if (!product.inStock) {
                 <span class="out-of-stock-badge">{{ t('products.outOfStock') }}</span>
               }
@@ -34,14 +39,19 @@
             <div class="product-info">
               <span class="product-category">{{ t('products.' + product.category) }}</span>
               <h3 class="product-name">{{ product.nameEn }}<br /><small>{{ product.nameAr }}</small></h3>
-              <!-- Color swatches -->
-              <div class="color-swatches" (click)="$event.stopPropagation()">
+              <!-- Color swatches — clicking one previews that color's photo on
+                   this card, and carries the choice into the product page too,
+                   instead of always opening on the default color. -->
+              <div class="color-swatches">
                 @for (color of product.colors; track color.hex) {
-                  <span
+                  <button
+                    type="button"
                     class="color-dot"
+                    [class.selected]="cardColor()[product.id]?.hex === color.hex"
                     [style.background]="color.hex"
-                    [title]="color.name">
-                  </span>
+                    [title]="color.name"
+                    (click)="selectCardColor(product, color, $event)">
+                  </button>
                 }
               </div>
               <span class="product-price">{{ product.price }} EGP</span>

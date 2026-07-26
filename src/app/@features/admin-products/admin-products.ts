@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ProductsService, Product, ColorOption } from '../../core/services/products.service';
+import { ProductsService, Product, ColorOption, ProductVariant } from '../../core/services/products.service';
 import { getErrorMessage } from '../../core/utils/http-error';
 
 const CATEGORIES = ['belts', 'wallets', 'cardHolders', 'slippers', 'portefeuille', 'longWallets'] as const;
@@ -30,6 +30,12 @@ export class AdminProducts {
   mainImage = signal<string | null>(null);
   colors = signal<ColorOption[]>([]);
   imageError = signal('');
+
+  // Per-color(+size) stock count — replaces the old blanket "In Stock" flag
+  // with a real number per piece/variant. Keyed by "color|size" (size is ''
+  // for sizeless products), so it survives colors/sizes being edited freely
+  // before save.
+  variantStock = signal<Record<string, number>>({});
 
   form = this.fb.group({
     nameEn: ['', Validators.required],
@@ -65,6 +71,7 @@ export class AdminProducts {
     this.form.reset({ nameEn: '', nameAr: '', descEn: '', descAr: '', price: 0, category: CATEGORIES[0], inStock: true, sizesCsv: '' });
     this.mainImage.set(null);
     this.colors.set([]);
+    this.variantStock.set({});
     this.imageError.set('');
     this.showForm.set(true);
   }
@@ -83,12 +90,63 @@ export class AdminProducts {
     });
     this.mainImage.set(product.image);
     this.colors.set(product.colors.map((c) => ({ ...c })));
+    const stockMap: Record<string, number> = {};
+    for (const v of product.variants ?? []) {
+      stockMap[this.variantKey(v.color, v.size)] = v.stock;
+    }
+    this.variantStock.set(stockMap);
     this.imageError.set('');
     this.showForm.set(true);
   }
 
   closeForm() {
     this.showForm.set(false);
+  }
+
+  private variantKey(color: string, size: string | null): string {
+    return `${color}|${size ?? ''}`;
+  }
+
+  /** The sizes currently typed into the sizesCsv box, parsed live (not just
+   * at save time), so the stock grid rebuilds itself as you type. */
+  sizesList(): string[] {
+    return (this.form.value.sizesCsv ?? '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+  }
+
+  /** One row per color if the product is sizeless, or one row per
+   * color+size combo if sizes are set — this is what the stock grid renders. */
+  variantRows(): { color: string; size: string | null }[] {
+    const sizes = this.sizesList();
+    const rows: { color: string; size: string | null }[] = [];
+    for (const c of this.colors()) {
+      if (c.name.trim() === '') continue;
+      if (sizes.length === 0) {
+        rows.push({ color: c.name, size: null });
+      } else {
+        for (const s of sizes) rows.push({ color: c.name, size: s });
+      }
+    }
+    return rows;
+  }
+
+  getStock(color: string, size: string | null): number {
+    return this.variantStock()[this.variantKey(color, size)] ?? 0;
+  }
+
+  setStock(color: string, size: string | null, value: string) {
+    const n = Math.max(0, Number(value) || 0);
+    this.variantStock.update((map) => ({ ...map, [this.variantKey(color, size)]: n }));
+  }
+
+  productTotalStock(product: Product): number {
+    return (product.variants ?? []).reduce((sum, v) => sum + v.stock, 0);
+  }
+
+  get totalStock(): number {
+    return this.variantRows().reduce((sum, r) => sum + this.getStock(r.color, r.size), 0);
   }
 
   private readFileAsDataUrl(file: File, onDone: (dataUrl: string) => void) {
@@ -152,13 +210,19 @@ export class AdminProducts {
       descAr: this.form.value.descAr!,
       price: Number(this.form.value.price),
       category: this.form.value.category as Product['category'],
-      inStock: !!this.form.value.inStock,
+      // If colors are defined, "in stock" is derived from the per-variant
+      // stock grid (any piece with stock > 0) rather than a manual flag —
+      // that grid is now the source of truth. The checkbox is only used as
+      // a manual override for sizeless/colorless products.
+      inStock: this.variantRows().length > 0 ? this.totalStock > 0 : !!this.form.value.inStock,
       image: this.mainImage()!,
       colors: this.colors(),
-      sizes: (this.form.value.sizesCsv ?? '')
-        .split(',')
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0),
+      sizes: this.sizesList(),
+      variants: this.variantRows().map((r) => ({
+        color: r.color,
+        size: r.size,
+        stock: this.getStock(r.color, r.size),
+      })) as ProductVariant[],
     };
 
     const id = this.editingId();

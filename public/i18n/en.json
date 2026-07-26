@@ -243,6 +243,7 @@
     "email": "Email Address"
   },
   "admin": {
+    "dashboard": "Dashboard",
     "orders": "Orders",
     "allOrders": "All Orders",
     "customer": "Customer",
@@ -267,6 +268,9 @@
     "category": "Category",
     "inStock": "In Stock",
     "sizes": "Sizes (comma-separated)",
+    "stockPerVariant": "Stock per color/size",
+    "pieces": "pcs",
+    "total": "Total",
     "actions": "Actions",
     "edit": "Edit",
     "delete": "Delete",
@@ -276,6 +280,14 @@
     "addColor": "Add Color",
     "messages": "Messages",
     "noMessages": "No messages yet.",
-    "new": "New"
+    "new": "New",
+    "dashboard": "Dashboard",
+    "totalRevenue": "Total Revenue",
+    "totalProducts": "Total Products",
+    "unreadMessages": "Unread Messages",
+    "pendingOrders": "Pending Orders",
+    "recentOrders": "Recent Orders",
+    "noNewNotifications": "No new notifications",
+    "viewStore": "← Back to Store"
   }
 }

@@ -49,6 +49,9 @@ const SLIPPER_COLORS = [
   { name: 'Black', nameAr: 'أسود', hex: '#1a1a1a', image: 'images/slipper-6.jpg' },
 ];
 
+// Sizes only make sense for footwear (slippers); belts/wallets/card-holders stay sizeless.
+const SHOE_SIZES = ['39', '40', '41', '42', '43', '44', '45'];
+
 const products = [
   { nameEn: 'Classic Leather Belt', nameAr: 'حزام جلد كلاسيك', price: 350, image: 'images/belt-1.jpg', category: 'belts', inStock: true, descEn: 'A timeless classic handcrafted from genuine full-grain leather. Durable, elegant, and made to last for years.', descAr: 'حزام كلاسيكي خالد مصنوع يدوياً من جلد طبيعي عالي الجودة. متين وأنيق ومصمم ليدوم لسنوات.', colors: BELT_COLORS },
   { nameEn: 'Wide Leather Belt', nameAr: 'حزام جلد عريض', price: 420, image: 'images/belt-2.jpg', category: 'belts', inStock: true, descEn: 'A bold wide-cut belt for a statement look. Perfect for casual and semi-formal wear.', descAr: 'حزام عريض بجرأة لإطلالة مميزة. مثالي للإطلالات الكاجوال وشبه الرسمية.', colors: BELT_COLORS },
@@ -62,7 +65,7 @@ const products = [
   { nameEn: 'Portefeuille Slim', nameAr: 'بورتفيه سليم نسائي', price: 620, image: 'images/portefeuille-3.jpg', category: 'portefeuille', inStock: true, descEn: 'Slim portefeuille in tan cowhide-pattern leather. Perfect everyday companion.', descAr: 'بورتفيه رفيع بلمسة جلد طبيعي بخامة الكاوهايد الكستنائي. رفيق مثالي لكل يوم.', colors: PORTEFEUILLE_COLORS },
   { nameEn: 'Minimalist Card Holder', nameAr: 'كارت هولدر مينيمال', price: 280, image: 'images/card-1.jpg', category: 'cardHolders', inStock: true, descEn: 'Ultra-slim card holder for the modern minimalist. Fits 4–6 cards comfortably.', descAr: 'كارت هولدر نحيف للغاية للشخصية العصرية المينيمالية. يحمل 4-6 بطاقات.', colors: CARD_COLORS },
   { nameEn: 'Snap Card Holder', nameAr: 'كارت هولدر سناب', price: 320, image: 'images/card-2.jpg', category: 'cardHolders', inStock: true, descEn: 'Secure snap-closure card holder with easy card access.', descAr: 'كارت هولدر بقفل سناب آمن مع سهولة الوصول للبطاقات.', colors: CARD_COLORS },
-  { nameEn: 'Leather Slipper — Classic', nameAr: 'شبشب جلد كلاسيك', price: 800, image: 'images/slipper-1.jpg', category: 'slippers', inStock: true, descEn: 'Handcrafted classic leather slippers for ultimate comfort.', descAr: 'شبشب جلد كلاسيك مصنوع يدوياً لراحة قصوى.', colors: SLIPPER_COLORS },
+  { nameEn: 'Leather Slipper — Classic', nameAr: 'شبشب جلد كلاسيك', price: 800, image: 'images/slipper-1.jpg', category: 'slippers', inStock: true, descEn: 'Handcrafted classic leather slippers for ultimate comfort.', descAr: 'شبشب جلد كلاسيك مصنوع يدوياً لراحة قصوى.', colors: SLIPPER_COLORS, sizes: SHOE_SIZES },
 ];
 
 async function main() {
@@ -75,7 +78,10 @@ async function main() {
   await prisma.discountCode.deleteMany();
 
   for (const p of products) {
-    await prisma.product.create({ data: { ...p, colors: JSON.stringify(p.colors) } });
+    const { colors, sizes, ...rest } = p as typeof p & { sizes?: string[] };
+    await prisma.product.create({
+      data: { ...rest, colors: JSON.stringify(colors), sizes: JSON.stringify(sizes ?? []) },
+    });
   }
 
   await prisma.user.create({

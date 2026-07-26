@@ -143,6 +143,66 @@
       }
     </div>
   </section>
+
+  <!-- ===== CONTACT US ===== -->
+  <section class="contact-section">
+    <p class="section-eyebrow centered-eyebrow">{{ t('contact.eyebrow') }}</p>
+    <h2>{{ t('contact.title') }}</h2>
+    <p class="contact-subtitle">{{ t('contact.subtitle') }}</p>
+
+    @if (contactSent()) {
+      <div class="contact-success">
+        <div class="contact-success-icon">✓</div>
+        <p>{{ t('contact.success') }}</p>
+      </div>
+    } @else {
+      <form class="contact-form" [formGroup]="contactForm" (ngSubmit)="sendContact()">
+        <div class="contact-form-row">
+          <div class="field-group">
+            <label>{{ t('contact.firstName') }}</label>
+            <input type="text" formControlName="firstName" />
+            @if (contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched) {
+              <span class="field-error">{{ t('checkout.required') }}</span>
+            }
+          </div>
+          <div class="field-group">
+            <label>{{ t('contact.lastName') }}</label>
+            <input type="text" formControlName="lastName" />
+            @if (contactForm.get('lastName')?.invalid && contactForm.get('lastName')?.touched) {
+              <span class="field-error">{{ t('checkout.required') }}</span>
+            }
+          </div>
+        </div>
+        <div class="contact-form-row">
+          <div class="field-group">
+            <label>{{ t('contact.phone') }}</label>
+            <input type="tel" formControlName="phone" />
+            @if (contactForm.get('phone')?.invalid && contactForm.get('phone')?.touched) {
+              <span class="field-error">{{ t('checkout.required') }}</span>
+            }
+          </div>
+          <div class="field-group">
+            <label>{{ t('contact.email') }} <span class="optional-tag">({{ t('checkout.optional') }})</span></label>
+            <input type="email" formControlName="email" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label>{{ t('contact.message') }}</label>
+          <textarea rows="4" formControlName="message"></textarea>
+          @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
+            <span class="field-error">{{ t('checkout.required') }}</span>
+          }
+        </div>
+
+        <button type="submit" class="contact-submit-btn" [disabled]="contactSending()">
+          @if (contactSending()) { <span class="auth-spinner"></span> } @else { {{ t('contact.send') }} }
+        </button>
+        @if (contactError()) {
+          <p class="contact-error">{{ contactError() }}</p>
+        }
+      </form>
+    }
+  </section>
 </div>
 
 <!-- ===== WHATSAPP FLOAT ===== -->

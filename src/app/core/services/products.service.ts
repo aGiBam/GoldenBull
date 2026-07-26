@@ -21,6 +21,7 @@ export interface Product {
   descEn: string;
   descAr: string;
   colors: ColorOption[];
+  sizes: string[];
 }
 
 @Injectable({ providedIn: 'root' })

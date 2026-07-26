@@ -13,6 +13,7 @@ export const routes: Routes = [
   { path: 'profile', loadComponent: () => import('./@features/profile/profile').then(c => c.Profile), canActivate: [authGuard] },
   { path: 'admin/orders', loadComponent: () => import('./@features/admin-orders/admin-orders').then(c => c.AdminOrders), canActivate: [adminGuard] },
   { path: 'admin/products', loadComponent: () => import('./@features/admin-products/admin-products').then(c => c.AdminProducts), canActivate: [adminGuard] },
+  { path: 'admin/messages', loadComponent: () => import('./@features/admin-messages/admin-messages').then(c => c.AdminMessages), canActivate: [adminGuard] },
   { path: 'shipping-policy', loadComponent: () => import('./@features/legal-page/legal-page').then(c => c.LegalPage), data: { page: 'shipping' } },
   { path: 'privacy-policy', loadComponent: () => import('./@features/legal-page/legal-page').then(c => c.LegalPage), data: { page: 'privacy' } },
   { path: 'terms', loadComponent: () => import('./@features/legal-page/legal-page').then(c => c.LegalPage), data: { page: 'terms' } },

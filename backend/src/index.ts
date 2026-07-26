@@ -5,6 +5,7 @@ import { authRouter } from './routes/auth.routes';
 import { productsRouter } from './routes/products.routes';
 import { ordersRouter } from './routes/orders.routes';
 import { discountsRouter } from './routes/discounts.routes';
+import { contactRouter } from './routes/contact.routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/discounts', discountsRouter);
+app.use('/api/contact', contactRouter);
 
 app.use(notFound);
 app.use(errorHandler);

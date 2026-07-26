@@ -164,6 +164,10 @@ app-navbar.with-announcement .navbar-wrapper { top: 34px; }
   display: flex; align-items: center;
   transition: color 0.2s;
   padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
 }
 
 .navbar-wrapper.scrolled .cart-btn { color: var(--text-muted); }

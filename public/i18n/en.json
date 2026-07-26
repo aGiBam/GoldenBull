@@ -4,6 +4,7 @@
     "close": "Dismiss"
   },
   "nav": {
+    "sideTitle":"Expertly Crafted Leather · Egypt",
     "home": "Home",
     "products": "Products",
     "cart": "Cart",
@@ -64,6 +65,8 @@
     "added": "Added!",
     "outOfStock": "Out of Stock",
     "color": "Color",
+    "size": "Size",
+    "selectSize": "Please select a size",
     "related": "More in this Collection",
     "bestSellers": "Best Sellers",
     "viewAll": "View All",
@@ -139,6 +142,18 @@
     "testimonial3Name": "Yara M.",
     "testimonial3Text": "Genuine leather, precise stitching, and a design that feels premium without the premium price. Will definitely order again."
   },
+  "contact": {
+    "eyebrow": "Get In Touch",
+    "title": "Contact Us",
+    "subtitle": "Have a question or a custom order in mind? Send us a message.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone Number",
+    "email": "Email",
+    "message": "Your Message",
+    "send": "Send Message",
+    "success": "Thank you! We've received your message and will get back to you soon."
+  },
   "footer": {
     "tagline": "Genuine leather goods, expertly crafted in Egypt. Quality that lasts a lifetime.",
     "rights": "All rights reserved.",
@@ -147,6 +162,7 @@
     "newsletterSub": "Join our list for updates, new arrivals and exclusive offers.",
     "emailPlaceholder": "Your email address",
     "subscribe": "Subscribe",
+    "subscribeSuccess": "You're in! Your code:",
     "location": "Egypt",
     "quickLinks": "Quick Links",
     "policies": "Policies",
@@ -250,12 +266,16 @@
     "price": "Price",
     "category": "Category",
     "inStock": "In Stock",
+    "sizes": "Sizes (comma-separated)",
     "actions": "Actions",
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
     "cancel": "Cancel",
     "mainImage": "Main Image",
-    "addColor": "Add Color"
+    "addColor": "Add Color",
+    "messages": "Messages",
+    "noMessages": "No messages yet.",
+    "new": "New"
   }
 }

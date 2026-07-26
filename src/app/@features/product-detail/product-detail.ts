@@ -22,8 +22,11 @@ export class ProductDetail {
   product = signal<Product | null>(null);
   added = signal(false);
   selectedColor = signal<ColorOption | null>(null);
+  selectedSize = signal<string | null>(null);
+  quantity = signal(1);
   lightboxOpen = signal(false);
   related = signal<Product[]>([]);
+  sizeRequiredError = signal(false);
 
   get lang() {
     return this.transloco.getActiveLang();
@@ -47,6 +50,8 @@ export class ProductDetail {
         tap((p) => {
           this.product.set(p);
           this.selectedColor.set(p?.colors[0] ?? null);
+          this.selectedSize.set(p?.sizes?.[0] ?? null);
+          this.quantity.set(1);
         }),
         switchMap((p) => (p ? this.productsService.getByCategory(p.category) : of([]))),
         takeUntilDestroyed()
@@ -61,6 +66,19 @@ export class ProductDetail {
     this.selectedColor.set(color);
   }
 
+  selectSize(size: string) {
+    this.selectedSize.set(size);
+    this.sizeRequiredError.set(false);
+  }
+
+  increment() {
+    this.quantity.update((q) => q + 1);
+  }
+
+  decrement() {
+    this.quantity.update((q) => Math.max(1, q - 1));
+  }
+
   openLightbox() {
     this.lightboxOpen.set(true);
   }
@@ -72,7 +90,30 @@ export class ProductDetail {
   addToCart() {
     const p = this.product();
     if (!p || !p.inStock) return;
-    this.cart.addItem({ id: p.id, name: p.nameEn, nameAr: p.nameAr, price: p.price, image: p.image, category: p.category });
+    if (p.sizes?.length && !this.selectedSize()) {
+      this.sizeRequiredError.set(true);
+      return;
+    }
+    const c = this.selectedColor();
+    // Bug fix: previously this always added the product's default photo/name,
+    // regardless of the color the customer actually selected (pick a brown
+    // pair, cart showed the default black one). Now it uses the active
+    // color's own image and label.
+    this.cart.addItem(
+      {
+        id: p.id,
+        name: p.nameEn,
+        nameAr: p.nameAr,
+        price: p.price,
+        image: this.activeImage(),
+        category: p.category,
+        color: c?.name,
+        colorAr: c?.nameAr,
+        colorHex: c?.hex,
+        size: this.selectedSize() ?? undefined,
+      },
+      this.quantity()
+    );
     this.added.set(true);
     setTimeout(() => this.added.set(false), 2000);
   }

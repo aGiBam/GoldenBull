@@ -3,8 +3,62 @@ import { z } from 'zod';
 import { prisma } from '../db';
 import { requireAuth, requireAdmin } from '../middleware/auth.middleware';
 import { ApiError } from '../middleware/error.middleware';
+import { sendEmail, notifyAdmin } from '../utils/email';
 
 export const discountsRouter = Router();
+
+function generatePromoCode(): string {
+  // 6 uppercase alphanumeric characters, e.g. "K3F9QZ" — short enough to
+  // type at checkout, long enough to not collide in practice.
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I to avoid confusion
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+const subscribeSchema = z.object({ email: z.string().email() });
+
+// Public: newsletter "Subscribe & get 10% off" signup. One real, working
+// code per new email address — re-submitting the same email returns their
+// existing code instead of erroring, so it's idempotent.
+discountsRouter.post('/subscribe', async (req, res, next) => {
+  try {
+    const { email } = subscribeSchema.parse(req.body);
+    const normalized = email.trim().toLowerCase();
+
+    const existing = await prisma.discountCode.findUnique({ where: { ownerEmail: normalized } });
+    if (existing) {
+      res.json({ code: existing.code, percent: existing.percent, alreadySubscribed: true });
+      return;
+    }
+
+    let code = generatePromoCode();
+    // Extremely unlikely to collide, but guard against it anyway.
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const clash = await prisma.discountCode.findUnique({ where: { code } });
+      if (!clash) break;
+      code = generatePromoCode();
+    }
+
+    const created = await prisma.discountCode.create({
+      data: { code, percent: 10, ownerEmail: normalized, maxUses: 1 },
+    });
+
+    await sendEmail(
+      normalized,
+      'Your Golden Bull 10% off code',
+      `<p>Thanks for subscribing! Use code <strong>${code}</strong> at checkout for 10% off your first order.</p>`
+    );
+    await notifyAdmin(
+      'New newsletter subscriber',
+      `<p>${normalized} subscribed and received promo code <strong>${code}</strong>.</p>`
+    );
+
+    res.status(201).json({ code: created.code, percent: created.percent, alreadySubscribed: false });
+  } catch (err) {
+    next(err);
+  }
+});
 
 const validateSchema = z.object({
   code: z.string().trim().min(1),

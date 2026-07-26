@@ -60,13 +60,17 @@ export class Products implements OnInit {
   addToCart(product: Product, event: Event) {
     event.preventDefault();
     event.stopPropagation();
+    const firstColor = product.colors?.[0];
     this.cart.addItem({
       id: product.id,
       name: product.nameEn,
       nameAr: product.nameAr,
       price: product.price,
-      image: product.image,
+      image: firstColor?.image ?? product.image,
       category: product.category,
+      color: firstColor?.name,
+      colorAr: firstColor?.nameAr,
+      colorHex: firstColor?.hex,
     });
   }
 }

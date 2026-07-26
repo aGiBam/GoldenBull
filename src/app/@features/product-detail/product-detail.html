@@ -67,6 +67,40 @@
             </div>
           }
 
+          <!-- Size Picker -->
+          @if (product()!.sizes?.length) {
+            <div class="size-picker">
+              <p class="size-picker-label">
+                {{ t('products.size') }}:
+                @if (selectedSize()) { <strong>{{ selectedSize() }}</strong> }
+              </p>
+              <div class="size-options">
+                @for (size of product()!.sizes; track size) {
+                  <button
+                    type="button"
+                    class="size-swatch"
+                    [class.selected]="selectedSize() === size"
+                    (click)="selectSize(size)">
+                    {{ size }}
+                  </button>
+                }
+              </div>
+              @if (sizeRequiredError()) {
+                <p class="size-error">{{ t('products.selectSize') }}</p>
+              }
+            </div>
+          }
+
+          <!-- Quantity Stepper -->
+          <div class="qty-stepper">
+            <p class="qty-label">{{ t('cart.quantity') }}</p>
+            <div class="qty-controls">
+              <button type="button" (click)="decrement()" [disabled]="quantity() <= 1">−</button>
+              <span class="qty-value">{{ quantity() }}</span>
+              <button type="button" (click)="increment()">+</button>
+            </div>
+          </div>
+
           <div class="detail-badges">
             <span class="badge">✋ {{ t('features.handmade') }}</span>
             <span class="badge">🏅 {{ t('features.genuine') }}</span>

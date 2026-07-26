@@ -1,0 +1,41 @@
+<div class="admin-messages-page" *transloco="let t">
+  <div class="admin-header">
+    <h1>{{ t('admin.messages') }}</h1>
+  </div>
+
+  @if (errorMsg()) {
+    <div class="error-banner">{{ errorMsg() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="state-msg">Loading…</p>
+  } @else if (messages().length === 0) {
+    <p class="state-msg">{{ t('admin.noMessages') }}</p>
+  } @else {
+    <div class="messages-list">
+      @for (message of messages(); track message.id) {
+        <div class="message-card" [class.unread]="!message.read" (click)="markRead(message)">
+          <div class="message-card-header">
+            <div>
+              <strong>{{ message.firstName }} {{ message.lastName }}</strong>
+              @if (!message.read) { <span class="unread-badge">{{ t('admin.new') }}</span> }
+            </div>
+            <span class="message-date">{{ message.createdAt | date: 'medium' }}</span>
+          </div>
+          <div class="message-contact-info">
+            <span>📞 {{ message.phone }}</span>
+            @if (message.email) { <span>📧 {{ message.email }}</span> }
+          </div>
+          <p class="message-text">{{ message.message }}</p>
+          <button
+            class="message-delete-btn"
+            (click)="$event.stopPropagation(); deleteMessage(message)"
+            [disabled]="deletingId() === message.id"
+          >
+            {{ t('admin.delete') }}
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -13,7 +13,7 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class Navbar {
   private transloco = inject(TranslocoService);
-  private cart = inject(CartService);
+  cart = inject(CartService);
   themeService = inject(ThemeService);
   auth = inject(AuthService);
 

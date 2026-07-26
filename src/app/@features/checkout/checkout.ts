@@ -156,14 +156,22 @@ export class Checkout {
       shippingFloor: this.form.value.floor!,
       shippingApartment: this.form.value.apartment!,
       ...(this.form.value.landmark ? { shippingLandmark: this.form.value.landmark } : {}),
-      items: this.items().map((i) => ({
-        productId: i.id,
-        nameEn: i.name,
-        nameAr: i.nameAr,
-        price: i.price,
-        quantity: i.quantity,
-        image: i.image,
-      })),
+      items: this.items().map((i) => {
+        // Fold the color/size variant into the stored label so order history
+        // and the admin dashboard show exactly what was picked, without
+        // needing a schema change to OrderItem for variant fields.
+        const variantSuffix = [i.color, i.size ? `${this.transloco.getActiveLang() === 'ar' ? 'مقاس' : 'Size'} ${i.size}` : '']
+          .filter(Boolean)
+          .join(', ');
+        return {
+          productId: i.id,
+          nameEn: variantSuffix ? `${i.name} (${variantSuffix})` : i.name,
+          nameAr: variantSuffix ? `${i.nameAr} (${variantSuffix})` : i.nameAr,
+          price: i.price,
+          quantity: i.quantity,
+          image: i.image,
+        };
+      }),
     };
 
     this.orders.create(payload).subscribe({

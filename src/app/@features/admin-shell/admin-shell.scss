@@ -92,6 +92,10 @@
 
 .admin-sidebar-overlay {
   display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 49;
 }
 
 /* ── Main ── */
@@ -224,7 +228,6 @@
     transition: inset-inline-start 0.2s ease;
   }
   .admin-sidebar.open { inset-inline-start: 0; }
-  .admin-sidebar-overlay.open,
-  .admin-sidebar.open ~ .admin-sidebar-overlay { display: block; }
+  .admin-sidebar-overlay { display: block; }
   .admin-hamburger { display: flex; }
 }

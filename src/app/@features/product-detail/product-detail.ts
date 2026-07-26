@@ -20,6 +20,12 @@ export class ProductDetail {
   private transloco = inject(TranslocoService);
 
   product = signal<Product | null>(null);
+  // Distinct from "product is null because the id doesn't exist" — without
+  // this, the page showed "Product not found" for a split second on every
+  // navigation (while the request was still in flight), which is what made
+  // the page look near-empty right after the footer/nav rendered, before
+  // jumping once the real content arrived.
+  loading = signal(true);
   added = signal(false);
   selectedColor = signal<ColorOption | null>(null);
   selectedSize = signal<string | null>(null);
@@ -43,12 +49,14 @@ export class ProductDetail {
   constructor() {
     this.route.paramMap
       .pipe(
+        tap(() => this.loading.set(true)),
         switchMap((params) => {
           const id = Number(params.get('id'));
           return this.productsService.getById(id).pipe(catchError(() => of(null)));
         }),
         tap((p) => {
           this.product.set(p);
+          this.loading.set(false);
           // If we arrived here from a color swatch clicked on the products
           // grid (?color=Havana), open on that color instead of always
           // defaulting to the first one — otherwise picking Havana there

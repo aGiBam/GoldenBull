@@ -1,6 +1,10 @@
 <div class="detail-page" *transloco="let t">
 
-  @if (product()) {
+  @if (loading()) {
+    <div class="detail-loading">
+      <span class="detail-spinner"></span>
+    </div>
+  } @else if (product()) {
     <div class="detail-container">
 
       <!-- Breadcrumb -->

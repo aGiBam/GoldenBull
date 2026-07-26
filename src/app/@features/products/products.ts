@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CartService } from '../../core/services/cart.service';
 import { ProductsService, Product, ColorOption } from '../../core/services/products.service';
@@ -31,6 +31,12 @@ export class Products implements OnInit {
     slippers: '🥿',
   };
 
+  // Distinct from "this category has 0 products" — without it, "No products
+  // found" flashed on screen for every request (including just switching
+  // tabs), which made the page look briefly empty before the real grid
+  // arrived.
+  loading = signal(true);
+
   /**
    * Re-fetches from the API whenever the filter changes. switchMap cancels any
    * in-flight request for the previous filter, so rapid tab-clicking can't
@@ -38,9 +44,11 @@ export class Products implements OnInit {
    */
   filteredProducts = toSignal(
     toObservable(this.activeFilter).pipe(
+      tap(() => this.loading.set(true)),
       switchMap((filter) =>
         this.productsService.getByCategory(filter).pipe(catchError(() => of([] as Product[])))
-      )
+      ),
+      tap(() => this.loading.set(false))
     ),
     { initialValue: [] as Product[] }
   );

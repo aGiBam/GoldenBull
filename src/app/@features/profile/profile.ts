@@ -7,10 +7,11 @@ import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { OrdersService, OrderDto } from '../../core/services/orders.service';
 import { getErrorMessage } from '../../core/utils/http-error';
+import { OrderStatusStepper } from '../../@shared/order-status-stepper/order-status-stepper';
 
 @Component({
   selector: 'app-profile',
-  imports: [RouterLink, TranslocoModule, ReactiveFormsModule, DatePipe],
+  imports: [RouterLink, TranslocoModule, ReactiveFormsModule, DatePipe, OrderStatusStepper],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })

@@ -184,6 +184,9 @@
           <div class="field-group">
             <label>{{ t('contact.email') }} <span class="optional-tag">({{ t('checkout.optional') }})</span></label>
             <input type="email" formControlName="email" />
+            @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+              <span class="field-error">{{ t('auth.emailInvalid') }}</span>
+            }
           </div>
         </div>
         <div class="field-group">

@@ -180,10 +180,14 @@
   inset-inline-end: 0;
   width: 320px;
   max-width: 90vw;
-  background: var(--bg-card);
+  // bg-card is a near-transparent gold tint (meant to sit over a page
+  // background), which made this floating popup look washed-out/too bright
+  // in light mode — a solid, dedicated background reads correctly in both
+  // themes.
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
   z-index: 61;
   display: flex;
   flex-direction: column;
@@ -208,13 +212,13 @@
   border: none;
   padding: 0.6rem 0.7rem;
   border-radius: 6px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: 0.8rem;
   cursor: pointer;
   font-family: inherit;
 }
 
-.admin-bell-item:hover { background: rgba(200,146,10,0.08); color: var(--text-primary); }
+.admin-bell-item:hover { background: rgba(200,146,10,0.14); color: var(--color-gold); }
 
 .admin-content {
   flex: 1;

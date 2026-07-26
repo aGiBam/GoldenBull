@@ -156,6 +156,14 @@
     "send": "Send Message",
     "success": "Thank you! We've received your message and will get back to you soon."
   },
+  "orderStatus": {
+    "pending": "Working on your piece",
+    "confirmed": "Working on your piece",
+    "shipped": "Handed to shipping company",
+    "outForDelivery": "Out for delivery",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
   "footer": {
     "tagline": "Genuine leather goods, expertly crafted in Egypt. Quality that lasts a lifetime.",
     "rights": "All rights reserved.",

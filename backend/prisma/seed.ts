@@ -71,21 +71,28 @@ const products = [
 async function main() {
   console.log('Seeding...');
 
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.discountCode.deleteMany();
-
+  // Deliberately NOT wiping Order/OrderItem, and NOT deleting-then-recreating
+  // Product/User rows — real orders reference specific product/user IDs by
+  // foreign key, so deleting those rows would either fail outright (FK
+  // constraint) or silently orphan past orders. Instead this upserts by a
+  // stable natural key (nameEn for products, email for users), which keeps
+  // existing IDs — and therefore existing orders — intact while still
+  // updating prices/photos/colors/sizes to match the arrays above.
   for (const p of products) {
     const { colors, sizes, ...rest } = p as typeof p & { sizes?: string[] };
-    await prisma.product.create({
-      data: { ...rest, colors: JSON.stringify(colors), sizes: JSON.stringify(sizes ?? []) },
-    });
+    const data = { ...rest, colors: JSON.stringify(colors), sizes: JSON.stringify(sizes ?? []) };
+    const existing = await prisma.product.findFirst({ where: { nameEn: p.nameEn } });
+    if (existing) {
+      await prisma.product.update({ where: { id: existing.id }, data });
+    } else {
+      await prisma.product.create({ data });
+    }
   }
 
-  await prisma.user.create({
-    data: {
+  await prisma.user.upsert({
+    where: { email: 'test@test.com' },
+    update: {},
+    create: {
       name: 'Test User',
       email: 'test@test.com',
       passwordHash: await bcrypt.hash('123456', 10),
@@ -93,8 +100,10 @@ async function main() {
     },
   });
 
-  await prisma.user.create({
-    data: {
+  await prisma.user.upsert({
+    where: { email: 'admin@goldenbull.com' },
+    update: {},
+    create: {
       name: 'Admin',
       email: 'admin@goldenbull.com',
       passwordHash: await bcrypt.hash('admin123', 10),
@@ -105,11 +114,15 @@ async function main() {
   // The real, working code behind the site's "10% off" messaging — the
   // announcement bar/footer should only ever advertise a code that actually
   // applies here, so this stays in sync with whatever copy references it.
-  await prisma.discountCode.create({
-    data: { code: 'WELCOME10', percent: 10, active: true },
+  // Safe to upsert (no FK from orders to this row — Order.discountCode is
+  // just a plain string, not a relation).
+  await prisma.discountCode.upsert({
+    where: { code: 'WELCOME10' },
+    update: {},
+    create: { code: 'WELCOME10', percent: 10, active: true },
   });
 
-  console.log(`Seeded ${products.length} products, 2 users, and 1 discount code.`);
+  console.log(`Seeded ${products.length} products, 2 users, and 1 discount code (orders untouched).`);
 }
 
 main()

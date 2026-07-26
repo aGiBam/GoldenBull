@@ -6,6 +6,9 @@
       <div class="success-icon">✓</div>
       <h2>{{ t('checkout.orderPlaced') }}</h2>
       <p>{{ t('checkout.orderConfirm') }}</p>
+      <div class="order-success-tracker">
+        <app-order-status-stepper status="pending"></app-order-status-stepper>
+      </div>
       <a routerLink="/products" class="btn-primary">{{ t('cart.continueShopping') }}</a>
     </div>
   } @else {

@@ -1,0 +1,24 @@
+<div class="status-stepper" *transloco="let t">
+  @if (isCancelled()) {
+    <div class="stepper-cancelled">
+      <span class="cancelled-icon">✕</span>
+      <span>{{ t('orderStatus.cancelled') }}</span>
+    </div>
+  } @else {
+    <div class="stepper-track">
+      @for (stage of stages; track stage; let i = $index; let last = $last) {
+        <div class="stepper-step" [class]="stageState(i)">
+          <div class="step-dot">
+            @if (stageState(i) === 'done') {
+              ✓
+            }
+          </div>
+          <span class="step-label">{{ t('orderStatus.' + stage) }}</span>
+        </div>
+        @if (!last) {
+          <div class="stepper-connector" [class.done]="stageState(i) === 'done'"></div>
+        }
+      }
+    </div>
+  }
+</div>

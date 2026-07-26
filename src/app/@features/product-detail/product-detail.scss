@@ -237,6 +237,30 @@
   color: var(--text-muted);
 }
 
+/* Centered loading state — fills the same min-height as the loaded page, so
+   nothing collapses to a near-empty page while the request is in flight
+   (that collapse was what made the footer briefly render up near the top). */
+.detail-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+  padding: 4rem 1.5rem;
+}
+
+.detail-spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid rgba(200, 146, 10, 0.2);
+  border-top-color: var(--color-gold);
+  animation: detail-spin 0.7s linear infinite;
+}
+
+@keyframes detail-spin {
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 768px) {
   .detail-layout { grid-template-columns: 1fr; gap: 2rem; }
   .related-grid { grid-template-columns: repeat(2, 1fr); }

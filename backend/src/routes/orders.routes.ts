@@ -115,7 +115,7 @@ ordersRouter.get('/', requireAuth, requireAdmin, async (_req, res, next) => {
 });
 
 const statusSchema = z.object({
-  status: z.enum(['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']),
+  status: z.enum(['pending', 'confirmed', 'shipped', 'outForDelivery', 'delivered', 'cancelled']),
 });
 
 ordersRouter.patch('/:id/status', requireAuth, requireAdmin, async (req, res, next) => {

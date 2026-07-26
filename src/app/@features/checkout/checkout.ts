@@ -6,6 +6,7 @@ import { CartService } from '../../core/services/cart.service';
 import { OrdersService } from '../../core/services/orders.service';
 import { getErrorMessage } from '../../core/utils/http-error';
 import { GOVERNORATES } from '../../core/constants/governorates';
+import { OrderStatusStepper } from '../../@shared/order-status-stepper/order-status-stepper';
 
 type PaymentMethod = 'cod' | 'vodafone' | 'instapay';
 
@@ -13,7 +14,7 @@ const MAX_PROOF_BYTES = 4 * 1024 * 1024; // 4MB, well under the backend's 5MB ca
 
 @Component({
   selector: 'app-checkout',
-  imports: [RouterLink, TranslocoModule, ReactiveFormsModule, FormsModule],
+  imports: [RouterLink, TranslocoModule, ReactiveFormsModule, FormsModule, OrderStatusStepper],
   templateUrl: './checkout.html',
   styleUrl: './checkout.scss',
 })

@@ -76,7 +76,12 @@ html {
     --color-brand-gold:  #9a6a05;
   }
 
-  html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
+  /* scroll-behavior intentionally NOT smooth globally: it made the router's
+     scroll-to-top-on-navigate animate slowly, which read as "the page just
+     scrolled" instead of "I navigated to the product I clicked" (the hero's
+     own SCROLL indicator still animates via a JS-triggered smooth scroll —
+     see Home.scrollToValueBar()). */
+  html { overflow-x: hidden; width: 100%; }
 
   body {
     font-family: 'Poppins', sans-serif;

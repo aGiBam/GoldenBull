@@ -28,10 +28,17 @@ export interface OrderDto {
   paymentProof?: string | null;
   subtotal: number;
   deposit: number;
+  discountCode?: string | null;
+  discountAmount: number;
   shippingName: string;
   shippingPhone: string;
-  shippingAddress: string;
+  shippingGovernorate: string;
   shippingCity: string;
+  shippingStreet: string;
+  shippingBuilding: string;
+  shippingFloor: string;
+  shippingApartment: string;
+  shippingLandmark?: string | null;
   createdAt: string;
   items: OrderItemDto[];
   user?: OrderUserDto;
@@ -40,11 +47,23 @@ export interface OrderDto {
 export interface CreateOrderPayload {
   paymentMethod: string;
   paymentProof?: string;
+  discountCode?: string;
   shippingName: string;
   shippingPhone: string;
-  shippingAddress: string;
+  shippingGovernorate: string;
   shippingCity: string;
+  shippingStreet: string;
+  shippingBuilding: string;
+  shippingFloor: string;
+  shippingApartment: string;
+  shippingLandmark?: string;
   items: Omit<OrderItemDto, 'id'>[];
+}
+
+export interface DiscountPreview {
+  code: string;
+  percent: number;
+  amount: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -68,5 +87,9 @@ export class OrdersService {
   /** Admin only. */
   updateStatus(id: string, status: OrderStatus): Observable<OrderDto> {
     return this.http.patch<OrderDto>(`${this.base}/${id}/status`, { status });
+  }
+
+  validateDiscount(code: string, subtotal: number): Observable<DiscountPreview> {
+    return this.http.post<DiscountPreview>(`${environment.apiUrl}/discounts/validate`, { code, subtotal });
   }
 }

@@ -1,0 +1,18 @@
+@if (content) {
+  <div class="legal-page">
+    <div class="legal-container">
+      <a routerLink="/home" class="legal-back">← {{ isAr ? 'الرئيسية' : 'Home' }}</a>
+      <h1>{{ isAr ? content.titleAr : content.titleEn }}</h1>
+      <p class="legal-intro">{{ isAr ? content.intro.ar : content.intro.en }}</p>
+
+      @for (section of content.sections; track section.titleEn) {
+        <section class="legal-section">
+          <h2>{{ isAr ? section.titleAr : section.titleEn }}</h2>
+          @for (line of (isAr ? section.bodyAr : section.bodyEn); track $index) {
+            <p class="legal-line">{{ line }}</p>
+          }
+        </section>
+      }
+    </div>
+  </div>
+}

@@ -110,6 +110,11 @@
             </div>
           </div>
 
+          <div class="form-group">
+            <label>{{ t('admin.sizes') }}</label>
+            <input type="text" formControlName="sizesCsv" placeholder="39, 40, 41, 42, 43 (leave blank if not sized)" />
+          </div>
+
           <label class="checkbox-row">
             <input type="checkbox" formControlName="inStock" />
             {{ t('admin.inStock') }}

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { prisma } from '../db';
-import { requireAuth, requireAdmin, AuthedRequest } from '../middleware/auth.middleware';
+import { requireAuth, requireAdmin, optionalAuth, AuthedRequest } from '../middleware/auth.middleware';
 import { ApiError } from '../middleware/error.middleware';
 
 export const ordersRouter = Router();
@@ -21,34 +21,67 @@ const createOrderSchema = z.object({
   // vodafone/instapay). Capped well under the 6mb JSON body limit set in
   // index.ts so a single bad request can't exhaust the request size budget.
   paymentProof: z.string().max(5_000_000).optional(),
+  discountCode: z.string().trim().min(1).optional(),
   shippingName: z.string().min(1),
   shippingPhone: z.string().regex(/^01[0-9]{9}$/),
-  shippingAddress: z.string().min(1),
+  shippingGovernorate: z.string().min(1),
   shippingCity: z.string().min(1),
+  shippingStreet: z.string().min(1),
+  shippingBuilding: z.string().min(1),
+  shippingFloor: z.string().min(1),
+  shippingApartment: z.string().min(1),
+  shippingLandmark: z.string().optional(),
   items: z.array(orderItemSchema).min(1),
 });
 
-ordersRouter.post('/', requireAuth, async (req: AuthedRequest, res, next) => {
+async function resolveDiscount(code: string | undefined, subtotal: number) {
+  if (!code) return { discountCode: null as string | null, discountAmount: 0 };
+  const found = await prisma.discountCode.findUnique({ where: { code: code.toUpperCase() } });
+  if (!found || !found.active) throw new ApiError(400, 'Invalid or expired discount code');
+  if (found.expiresAt && found.expiresAt < new Date()) throw new ApiError(400, 'This discount code has expired');
+  if (found.maxUses != null && found.usedCount >= found.maxUses) {
+    throw new ApiError(400, 'This discount code has reached its usage limit');
+  }
+  const discountAmount = Math.round(subtotal * (found.percent / 100));
+  return { discountCode: found.code, discountAmount, discountId: found.id };
+}
+
+// requireAuth was replaced with optionalAuth so orders can be placed without
+// an account (guest checkout) — a logged-in user's orders still link to
+// their account when a valid token is sent.
+ordersRouter.post('/', optionalAuth, async (req: AuthedRequest, res, next) => {
   try {
     const body = createOrderSchema.parse(req.body);
     const subtotal = body.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const deposit = Math.ceil(subtotal * 0.2);
+    const discount = await resolveDiscount(body.discountCode, subtotal);
+    const deposit = Math.ceil((subtotal - discount.discountAmount) * 0.2);
 
     const order = await prisma.order.create({
       data: {
-        userId: req.user!.id,
+        userId: req.user?.id,
         paymentMethod: body.paymentMethod,
         paymentProof: body.paymentProof,
         subtotal,
         deposit,
+        discountCode: discount.discountCode,
+        discountAmount: discount.discountAmount,
         shippingName: body.shippingName,
         shippingPhone: body.shippingPhone,
-        shippingAddress: body.shippingAddress,
+        shippingGovernorate: body.shippingGovernorate,
         shippingCity: body.shippingCity,
+        shippingStreet: body.shippingStreet,
+        shippingBuilding: body.shippingBuilding,
+        shippingFloor: body.shippingFloor,
+        shippingApartment: body.shippingApartment,
+        shippingLandmark: body.shippingLandmark,
         items: { create: body.items.map(({ productId, ...rest }) => ({ ...rest, productId })) },
       },
       include: { items: true },
     });
+
+    if ('discountId' in discount && discount.discountId) {
+      await prisma.discountCode.update({ where: { id: discount.discountId }, data: { usedCount: { increment: 1 } } });
+    }
 
     res.status(201).json(order);
   } catch (err) {

@@ -36,6 +36,9 @@
 }
 
 .filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   padding: 1rem 1.75rem;
   background: transparent;
   border: none;
@@ -50,6 +53,8 @@
   white-space: nowrap;
   margin-bottom: -1px;
 }
+
+.filter-icon { font-size: 1.05rem; line-height: 1; }
 
 .filter-btn:hover { color: var(--text-primary); }
 

@@ -35,13 +35,25 @@
               <label>{{ t('checkout.phone') }}</label>
               <input type="tel" formControlName="phone" placeholder="01XXXXXXXXX" />
               @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
-                <span class="field-error">{{ t('checkout.required') }}</span>
+                <span class="field-error">{{ t('checkout.phoneInvalid') }}</span>
               }
             </div>
-            <div class="form-group full-width">
-              <label>{{ t('checkout.address') }}</label>
-              <input type="text" formControlName="address" [placeholder]="t('checkout.address')" />
-              @if (form.get('address')?.invalid && form.get('address')?.touched) {
+          </form>
+        </section>
+
+        <!-- Delivery Address -->
+        <section class="form-section">
+          <h3 class="section-title">{{ t('checkout.deliveryAddress') }}</h3>
+          <form [formGroup]="form" class="form-grid">
+            <div class="form-group">
+              <label>{{ t('checkout.governorate') }}</label>
+              <select formControlName="governorate">
+                <option value="" disabled>{{ t('checkout.selectGovernorate') }}</option>
+                @for (g of governorates; track g.en) {
+                  <option [value]="g.en">{{ currentLang === 'ar' ? g.ar : g.en }}</option>
+                }
+              </select>
+              @if (form.get('governorate')?.invalid && form.get('governorate')?.touched) {
                 <span class="field-error">{{ t('checkout.required') }}</span>
               }
             </div>
@@ -51,6 +63,38 @@
               @if (form.get('city')?.invalid && form.get('city')?.touched) {
                 <span class="field-error">{{ t('checkout.required') }}</span>
               }
+            </div>
+            <div class="form-group full-width">
+              <label>{{ t('checkout.street') }}</label>
+              <input type="text" formControlName="street" [placeholder]="t('checkout.street')" />
+              @if (form.get('street')?.invalid && form.get('street')?.touched) {
+                <span class="field-error">{{ t('checkout.required') }}</span>
+              }
+            </div>
+            <div class="form-group">
+              <label>{{ t('checkout.building') }}</label>
+              <input type="text" formControlName="building" [placeholder]="t('checkout.building')" />
+              @if (form.get('building')?.invalid && form.get('building')?.touched) {
+                <span class="field-error">{{ t('checkout.required') }}</span>
+              }
+            </div>
+            <div class="form-group">
+              <label>{{ t('checkout.floor') }}</label>
+              <input type="text" formControlName="floor" [placeholder]="t('checkout.floor')" />
+              @if (form.get('floor')?.invalid && form.get('floor')?.touched) {
+                <span class="field-error">{{ t('checkout.required') }}</span>
+              }
+            </div>
+            <div class="form-group">
+              <label>{{ t('checkout.apartment') }}</label>
+              <input type="text" formControlName="apartment" [placeholder]="t('checkout.apartment')" />
+              @if (form.get('apartment')?.invalid && form.get('apartment')?.touched) {
+                <span class="field-error">{{ t('checkout.required') }}</span>
+              }
+            </div>
+            <div class="form-group full-width">
+              <label>{{ t('checkout.landmark') }} <span class="optional-tag">({{ t('checkout.optional') }})</span></label>
+              <input type="text" formControlName="landmark" [placeholder]="t('checkout.landmark')" />
             </div>
           </form>
         </section>
@@ -110,14 +154,20 @@
               @if (!proofDataUrl()) {
                 <label class="proof-dropzone">
                   <input type="file" accept="image/*" (change)="onProofSelected($event)" hidden />
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  <span>{{ t('checkout.proofChoose') }}</span>
+                  <span class="proof-dropzone-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  </span>
+                  <span class="proof-dropzone-text">
+                    <strong>{{ t('checkout.proofChoose') }}</strong>
+                    <small>{{ t('checkout.proofHintSmall') }}</small>
+                  </span>
                 </label>
               } @else {
                 <div class="proof-preview">
                   <img [src]="proofDataUrl()" [alt]="proofFileName() ?? 'proof'" />
                   <div class="proof-preview-info">
-                    <span>{{ proofFileName() }}</span>
+                    <span class="proof-uploaded-badge">✓ {{ t('checkout.proofUploaded') }}</span>
+                    <span class="proof-filename">{{ proofFileName() }}</span>
                     <button type="button" class="proof-remove" (click)="clearProof()">{{ t('checkout.proofRemove') }}</button>
                   </div>
                 </div>
@@ -152,14 +202,48 @@
 
           <div class="summary-divider"></div>
 
+          <!-- Promo code -->
+          @if (!promoApplied()) {
+            <div class="promo-row">
+              <input
+                type="text"
+                class="promo-input"
+                [placeholder]="t('checkout.promoPlaceholder')"
+                [ngModel]="promoInput()"
+                (ngModelChange)="promoInput.set($event)"
+                [ngModelOptions]="{ standalone: true }"
+              />
+              <button type="button" class="promo-apply-btn" [disabled]="promoChecking() || !promoInput()" (click)="applyPromo()">
+                {{ promoChecking() ? '…' : t('checkout.promoApply') }}
+              </button>
+            </div>
+            @if (promoError()) {
+              <span class="field-error">{{ promoError() }}</span>
+            }
+          } @else {
+            <div class="promo-applied-row">
+              <span>✓ {{ promoApplied()!.code }} (-{{ promoApplied()!.percent }}%)</span>
+              <button type="button" class="promo-remove-btn" (click)="removePromo()">{{ t('checkout.proofRemove') }}</button>
+            </div>
+          }
+
+          <div class="summary-divider"></div>
+
           <div class="summary-row">
             <span>{{ t('cart.subtotal') }}</span>
             <span>{{ subtotal() }} EGP</span>
           </div>
 
+          @if (promoApplied()) {
+            <div class="summary-row discount-row">
+              <span>{{ t('checkout.discount') }}</span>
+              <span>-{{ discountAmount() }} EGP</span>
+            </div>
+          }
+
           @if (needsDeposit) {
             <div class="summary-row deposit-row">
-              <span>Deposit (20%)</span>
+              <span>{{ t('checkout.depositLabel') }}</span>
               <span class="deposit-amount">{{ deposit() }} EGP</span>
             </div>
           }
@@ -167,7 +251,7 @@
           <div class="summary-divider"></div>
           <div class="summary-row total-row">
             <strong>{{ t('cart.total') }}</strong>
-            <strong>{{ subtotal() }} EGP</strong>
+            <strong>{{ totalAfterDiscount() }} EGP</strong>
           </div>
 
           @if (errorMsg()) {

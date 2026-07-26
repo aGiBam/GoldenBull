@@ -7,6 +7,7 @@
   <div class="filter-tabs">
     @for (filter of filters; track filter) {
       <button class="filter-btn" [class.active]="activeFilter() === filter" (click)="setFilter(filter)">
+        <span class="filter-icon">{{ filterIcons[filter] }}</span>
         {{ t('products.' + filter) }}
       </button>
     }

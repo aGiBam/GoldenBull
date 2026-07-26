@@ -280,6 +280,86 @@
   box-shadow: 0 0 0 3px rgba(200,146,10,0.3);
 }
 
+/* ── Size picker ── */
+.size-picker { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.4rem; }
+
+.size-picker-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.04em;
+}
+
+.size-picker-label strong { color: var(--text-primary); }
+
+.size-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.size-swatch {
+  min-width: 42px;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.size-swatch:hover { border-color: var(--color-gold); transform: translateY(-1px); }
+
+.size-swatch.selected {
+  border-color: var(--color-gold);
+  background: var(--color-gold);
+  color: #1a0e03;
+  font-weight: 600;
+}
+
+.size-error { color: #d1453b; font-size: 0.8rem; margin: 0; }
+
+/* ── Quantity stepper ── */
+.qty-stepper { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.4rem; }
+
+.qty-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.04em;
+}
+
+.qty-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: fit-content;
+  overflow: hidden;
+}
+
+.qty-controls button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.qty-controls button:hover:not(:disabled) { background: var(--color-gold); color: #1a0e03; }
+.qty-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.qty-value {
+  width: 40px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
 /* ── Image zoom hint ── */
 .detail-image-wrap { cursor: zoom-in; }
 

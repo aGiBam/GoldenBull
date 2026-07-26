@@ -1,0 +1,92 @@
+<ng-container *transloco="let t">
+  @if (isOpen()) {
+    <div class="drawer-overlay" (click)="close()"></div>
+    <aside class="cart-drawer">
+      <div class="drawer-header">
+        <h3>{{ t('cart.title') }}</h3>
+        <button class="drawer-close" (click)="close()">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      @if (items().length === 0) {
+        <div class="drawer-empty">
+          <div class="empty-icon">🛒</div>
+          <p>{{ t('cart.empty') }}</p>
+          <a routerLink="/products" class="btn-primary" (click)="close()">{{ t('cart.continueShopping') }}</a>
+        </div>
+      } @else {
+        <div class="drawer-items">
+          @for (item of items(); track item.variantKey) {
+            <div class="drawer-item">
+              <img [src]="item.image" [alt]="item.name" />
+              <div class="drawer-item-info">
+                <p class="drawer-item-name">{{ item.name }}</p>
+                @if (item.color || item.size) {
+                  <p class="drawer-item-variant">
+                    @if (item.color) { {{ item.color }} }
+                    @if (item.color && item.size) { · }
+                    @if (item.size) { {{ t('products.size') }} {{ item.size }} }
+                  </p>
+                }
+                <div class="drawer-item-row">
+                  <div class="drawer-qty">
+                    <button (click)="updateQty(item.variantKey, item.quantity - 1)">−</button>
+                    <span>{{ item.quantity }}</span>
+                    <button (click)="updateQty(item.variantKey, item.quantity + 1)">+</button>
+                  </div>
+                  <span class="drawer-item-price">{{ item.price * item.quantity }} EGP</span>
+                </div>
+              </div>
+              <button class="drawer-remove" (click)="remove(item.variantKey)" title="{{ t('cart.remove') }}">
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="drawer-footer">
+          @if (!promoApplied()) {
+            <div class="drawer-promo-row">
+              <input
+                type="text"
+                [placeholder]="t('checkout.promoPlaceholder')"
+                [value]="promoInput()"
+                (input)="promoInput.set($any($event.target).value)"
+              />
+              <button (click)="applyPromo()" [disabled]="promoChecking()">{{ t('checkout.promoApply') }}</button>
+            </div>
+            @if (promoError()) { <p class="drawer-promo-error">{{ promoError() }}</p> }
+          } @else {
+            <div class="drawer-promo-applied">
+              <span>✓ {{ promoApplied()!.code }} (-{{ promoApplied()!.percent }}%)</span>
+              <button (click)="removePromo()">{{ t('checkout.proofRemove') }}</button>
+            </div>
+          }
+
+          <div class="drawer-summary-row">
+            <span>{{ t('cart.subtotal') }}</span>
+            <span>{{ subtotal() }} EGP</span>
+          </div>
+          @if (discountAmount() > 0) {
+            <div class="drawer-summary-row discount">
+              <span>{{ t('checkout.discount') }}</span>
+              <span>-{{ discountAmount() }} EGP</span>
+            </div>
+          }
+          <div class="drawer-summary-row total">
+            <span>{{ t('cart.total') }}</span>
+            <span>{{ total() }} EGP</span>
+          </div>
+
+          <a routerLink="/checkout" class="btn-primary drawer-checkout-btn" (click)="close()">{{ t('cart.checkout') }}</a>
+          <a routerLink="/cart" class="drawer-view-cart-link" (click)="close()">{{ t('cart.title') }} →</a>
+        </div>
+      }
+    </aside>
+  }
+</ng-container>

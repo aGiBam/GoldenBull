@@ -14,11 +14,11 @@ export class Cart {
   items = this.cart.items;
   subtotal = this.cart.subtotal;
 
-  updateQty(id: number, qty: number) {
-    this.cart.updateQuantity(id, qty);
+  updateQty(variantKey: string, qty: number) {
+    this.cart.updateQuantity(variantKey, qty);
   }
 
-  remove(id: number) {
-    this.cart.removeItem(id);
+  remove(variantKey: string) {
+    this.cart.removeItem(variantKey);
   }
 }

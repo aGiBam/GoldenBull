@@ -18,9 +18,18 @@ export class Products implements OnInit {
   private cart = inject(CartService);
   private productsService = inject(ProductsService);
 
-  activeFilter = signal<string>('all');
+  activeFilter = signal<string>('belts');
 
-  readonly filters = ['all', 'belts', 'wallets', 'longWallets', 'portefeuille', 'cardHolders', 'slippers'];
+  readonly filters = ['belts', 'wallets', 'longWallets', 'portefeuille', 'cardHolders', 'slippers'];
+
+  readonly filterIcons: Record<string, string> = {
+    belts: '🎗️',
+    wallets: '👛',
+    longWallets: '💼',
+    portefeuille: '👜',
+    cardHolders: '💳',
+    slippers: '🥿',
+  };
 
   /**
    * Re-fetches from the API whenever the filter changes. switchMap cancels any
@@ -51,13 +60,17 @@ export class Products implements OnInit {
   addToCart(product: Product, event: Event) {
     event.preventDefault();
     event.stopPropagation();
+    const firstColor = product.colors?.[0];
     this.cart.addItem({
       id: product.id,
       name: product.nameEn,
       nameAr: product.nameAr,
       price: product.price,
-      image: product.image,
+      image: firstColor?.image ?? product.image,
       category: product.category,
+      color: firstColor?.name,
+      colorAr: firstColor?.nameAr,
+      colorHex: firstColor?.hex,
     });
   }
 }

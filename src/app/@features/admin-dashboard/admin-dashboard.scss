@@ -1,0 +1,124 @@
+.dashboard-page {
+  padding: 1.6rem 1.8rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-page h1 {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  color: var(--text-primary);
+  margin: 0 0 1.4rem;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+}
+
+.stat-icon { font-size: 1.6rem; }
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0.1rem 0 0;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.dashboard-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.2rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.panel-header h2 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.panel-header a {
+  font-size: 0.78rem;
+  color: var(--color-gold);
+  text-decoration: none;
+}
+
+.panel-empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mini-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.55rem 0.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  transition: background 0.15s;
+}
+
+.mini-row:hover { background: rgba(200,146,10,0.06); }
+
+.mini-msg { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.mini-status {
+  text-transform: capitalize;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  background: rgba(200,146,10,0.15);
+  color: var(--color-gold);
+  justify-self: start;
+}
+
+.mini-status.confirmed { background: rgba(70,140,220,0.15); color: #6ba8ee; }
+.mini-status.shipped { background: rgba(140,100,220,0.15); color: #b39ddb; }
+.mini-status.delivered { background: rgba(80,180,100,0.15); color: #6fcf7f; }
+.mini-status.cancelled { background: rgba(220,80,80,0.15); color: #e05757; }
+
+@media (max-width: 780px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}

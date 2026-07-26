@@ -1,0 +1,84 @@
+<div class="dashboard-page" *transloco="let t">
+  <h1>{{ t('admin.dashboard') }}</h1>
+
+  <div class="stat-cards">
+    <div class="stat-card">
+      <span class="stat-icon">🕐</span>
+      <div>
+        <p class="stat-value">{{ pendingOrders.length }}</p>
+        <p class="stat-label">{{ t('admin.pendingOrders') }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">✉️</span>
+      <div>
+        <p class="stat-value">{{ unreadMessages.length }}</p>
+        <p class="stat-label">{{ t('admin.unreadMessages') }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📦</span>
+      <div>
+        <p class="stat-value">{{ products().length }}</p>
+        <p class="stat-label">{{ t('admin.totalProducts') }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">⚠️</span>
+      <div>
+        <p class="stat-value">{{ outOfStockCount }}</p>
+        <p class="stat-label">{{ t('products.outOfStock') }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">💰</span>
+      <div>
+        <p class="stat-value">{{ totalRevenue }} EGP</p>
+        <p class="stat-label">{{ t('admin.totalRevenue') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="dashboard-panel">
+      <div class="panel-header">
+        <h2>{{ t('admin.recentOrders') }}</h2>
+        <a routerLink="/admin/orders">{{ t('products.viewAll') }} →</a>
+      </div>
+      @if (recentOrders.length === 0) {
+        <p class="panel-empty">{{ t('admin.noOrders') }}</p>
+      } @else {
+        <div class="mini-list">
+          @for (order of recentOrders; track order.id) {
+            <a routerLink="/admin/orders" class="mini-row">
+              <span>#{{ order.id.slice(0, 8) }}</span>
+              <span>{{ order.shippingName }}</span>
+              <span class="mini-status" [class]="order.status">{{ order.status }}</span>
+              <span>{{ order.subtotal }} EGP</span>
+            </a>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="dashboard-panel">
+      <div class="panel-header">
+        <h2>{{ t('admin.messages') }}</h2>
+        <a routerLink="/admin/messages">{{ t('products.viewAll') }} →</a>
+      </div>
+      @if (unreadMessages.length === 0) {
+        <p class="panel-empty">{{ t('admin.noNewNotifications') }}</p>
+      } @else {
+        <div class="mini-list">
+          @for (m of unreadMessages.slice(0, 5); track m.id) {
+            <a routerLink="/admin/messages" class="mini-row">
+              <span>{{ m.firstName }} {{ m.lastName }}</span>
+              <span class="mini-msg">{{ m.message.slice(0, 40) }}{{ m.message.length > 40 ? '…' : '' }}</span>
+              <span>{{ m.createdAt | date: 'shortDate' }}</span>
+            </a>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

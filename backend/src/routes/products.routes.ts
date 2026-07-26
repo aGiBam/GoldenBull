@@ -6,8 +6,8 @@ import { ApiError } from '../middleware/error.middleware';
 
 export const productsRouter = Router();
 
-function serialize(p: { colors: string; [k: string]: unknown }) {
-  return { ...p, colors: JSON.parse(p.colors) };
+function serialize(p: { colors: string; sizes?: string; [k: string]: unknown }) {
+  return { ...p, colors: JSON.parse(p.colors), sizes: p.sizes ? JSON.parse(p.sizes) : [] };
 }
 
 productsRouter.get('/', async (req, res, next) => {
@@ -51,13 +51,14 @@ const productSchema = z.object({
   category: z.enum(['belts', 'wallets', 'cardHolders', 'slippers', 'portefeuille', 'longWallets']),
   inStock: z.boolean().default(true),
   colors: z.array(colorSchema).default([]),
+  sizes: z.array(z.string()).default([]),
 });
 
 productsRouter.post('/', requireAuth, requireAdmin, async (req, res, next) => {
   try {
     const body = productSchema.parse(req.body);
     const product = await prisma.product.create({
-      data: { ...body, colors: JSON.stringify(body.colors) },
+      data: { ...body, colors: JSON.stringify(body.colors), sizes: JSON.stringify(body.sizes) },
     });
     res.status(201).json(serialize(product));
   } catch (err) {
@@ -71,6 +72,7 @@ productsRouter.put('/:id', requireAuth, requireAdmin, async (req, res, next) => 
     const body = productSchema.partial().parse(req.body);
     const data: Record<string, unknown> = { ...body };
     if (body.colors) data['colors'] = JSON.stringify(body.colors);
+    if (body.sizes) data['sizes'] = JSON.stringify(body.sizes);
     const product = await prisma.product.update({ where: { id }, data });
     res.json(serialize(product));
   } catch (err) {

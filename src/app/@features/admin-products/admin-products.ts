@@ -39,6 +39,7 @@ export class AdminProducts {
     price: [0, [Validators.required, Validators.min(1)]],
     category: [CATEGORIES[0] as string, Validators.required],
     inStock: [true],
+    sizesCsv: [''], // comma-separated, e.g. "39,40,41,42" — leave blank for sizeless products
   });
 
   constructor() {
@@ -61,7 +62,7 @@ export class AdminProducts {
 
   openAddForm() {
     this.editingId.set(null);
-    this.form.reset({ nameEn: '', nameAr: '', descEn: '', descAr: '', price: 0, category: CATEGORIES[0], inStock: true });
+    this.form.reset({ nameEn: '', nameAr: '', descEn: '', descAr: '', price: 0, category: CATEGORIES[0], inStock: true, sizesCsv: '' });
     this.mainImage.set(null);
     this.colors.set([]);
     this.imageError.set('');
@@ -78,6 +79,7 @@ export class AdminProducts {
       price: product.price,
       category: product.category,
       inStock: product.inStock,
+      sizesCsv: (product.sizes ?? []).join(', '),
     });
     this.mainImage.set(product.image);
     this.colors.set(product.colors.map((c) => ({ ...c })));
@@ -153,6 +155,10 @@ export class AdminProducts {
       inStock: !!this.form.value.inStock,
       image: this.mainImage()!,
       colors: this.colors(),
+      sizes: (this.form.value.sizesCsv ?? '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0),
     };
 
     const id = this.editingId();

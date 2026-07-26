@@ -49,7 +49,15 @@ export class ProductDetail {
         }),
         tap((p) => {
           this.product.set(p);
-          this.selectedColor.set(p?.colors[0] ?? null);
+          // If we arrived here from a color swatch clicked on the products
+          // grid (?color=Havana), open on that color instead of always
+          // defaulting to the first one — otherwise picking Havana there
+          // and landing on Black here looks like a broken link.
+          const requestedColorName = this.route.snapshot.queryParamMap.get('color');
+          const requestedColor = requestedColorName
+            ? p?.colors.find((c) => c.name === requestedColorName)
+            : undefined;
+          this.selectedColor.set(requestedColor ?? p?.colors[0] ?? null);
           this.selectedSize.set(p?.sizes?.[0] ?? null);
           this.quantity.set(1);
         }),

@@ -243,6 +243,7 @@
     "email": "البريد الإلكتروني"
   },
   "admin": {
+    "dashboard": "لوحة التحكم",
     "orders": "الطلبات",
     "allOrders": "كل الطلبات",
     "customer": "العميل",
@@ -267,6 +268,9 @@
     "category": "الفئة",
     "inStock": "متوفر",
     "sizes": "المقاسات (مفصولة بفاصلة)",
+    "stockPerVariant": "الكمية لكل لون/مقاس",
+    "pieces": "قطعة",
+    "total": "الإجمالي",
     "actions": "إجراءات",
     "edit": "تعديل",
     "delete": "حذف",
@@ -276,6 +280,14 @@
     "addColor": "إضافة لون",
     "messages": "الرسائل",
     "noMessages": "لا توجد رسائل بعد.",
-    "new": "جديد"
+    "new": "جديد",
+    "dashboard": "لوحة التحكم",
+    "totalRevenue": "إجمالي المبيعات",
+    "totalProducts": "إجمالي المنتجات",
+    "unreadMessages": "رسائل غير مقروءة",
+    "pendingOrders": "طلبات في الانتظار",
+    "recentOrders": "أحدث الطلبات",
+    "noNewNotifications": "لا توجد إشعارات جديدة",
+    "viewStore": "← العودة للمتجر"
   }
 }

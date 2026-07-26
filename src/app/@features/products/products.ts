@@ -5,7 +5,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CartService } from '../../core/services/cart.service';
-import { ProductsService, Product } from '../../core/services/products.service';
+import { ProductsService, Product, ColorOption } from '../../core/services/products.service';
 
 @Component({
   selector: 'app-products',
@@ -45,6 +45,27 @@ export class Products implements OnInit {
     { initialValue: [] as Product[] }
   );
 
+  // Which color swatch is currently previewed on each product card, keyed by
+  // product id. Clicking a swatch swaps the card's thumbnail to that color
+  // (previously the dots were purely decorative — clicking one did nothing,
+  // and the card always opened the product on its default/first color).
+  cardColor = signal<Record<number, ColorOption>>({});
+
+  cardImage(product: Product): string {
+    return this.cardColor()[product.id]?.image ?? product.image;
+  }
+
+  selectCardColor(product: Product, color: ColorOption, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.cardColor.update((map) => ({ ...map, [product.id]: color }));
+  }
+
+  detailQueryParams(product: Product) {
+    const chosen = this.cardColor()[product.id];
+    return chosen ? { color: chosen.name } : {};
+  }
+
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       if (params['category']) {
@@ -60,17 +81,17 @@ export class Products implements OnInit {
   addToCart(product: Product, event: Event) {
     event.preventDefault();
     event.stopPropagation();
-    const firstColor = product.colors?.[0];
+    const color = this.cardColor()[product.id] ?? product.colors?.[0];
     this.cart.addItem({
       id: product.id,
       name: product.nameEn,
       nameAr: product.nameAr,
       price: product.price,
-      image: firstColor?.image ?? product.image,
+      image: color?.image ?? product.image,
       category: product.category,
-      color: firstColor?.name,
-      colorAr: firstColor?.nameAr,
-      colorHex: firstColor?.hex,
+      color: color?.name,
+      colorAr: color?.nameAr,
+      colorHex: color?.hex,
     });
   }
 }

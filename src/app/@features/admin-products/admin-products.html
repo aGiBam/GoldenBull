@@ -43,6 +43,11 @@
                 } @else {
                   <span class="status-badge out-of-stock">{{ t('products.outOfStock') }}</span>
                 }
+                @if (product.variants?.length) {
+                  <span class="stock-count">
+                    ({{ productTotalStock(product) }} {{ t('admin.pieces') }})
+                  </span>
+                }
               </td>
               <td>
                 <div class="row-actions">
@@ -115,11 +120,6 @@
             <input type="text" formControlName="sizesCsv" placeholder="39, 40, 41, 42, 43 (leave blank if not sized)" />
           </div>
 
-          <label class="checkbox-row">
-            <input type="checkbox" formControlName="inStock" />
-            {{ t('admin.inStock') }}
-          </label>
-
           <div class="form-group">
             <label>{{ t('admin.mainImage') }}</label>
             <div class="image-picker">
@@ -176,6 +176,31 @@
               </div>
             }
           </div>
+
+          @if (variantRows().length > 0) {
+            <div class="stock-grid-section">
+              <label>{{ t('admin.stockPerVariant') }} <span class="stock-total-hint">({{ t('admin.total') }}: {{ totalStock }})</span></label>
+              <div class="stock-grid">
+                @for (row of variantRows(); track row.color + '|' + row.size) {
+                  <div class="stock-grid-row">
+                    <span class="stock-grid-label">{{ row.color }}@if (row.size) { — {{ t('products.size') }} {{ row.size }} }</span>
+                    <input
+                      type="number"
+                      min="0"
+                      class="stock-input"
+                      [value]="getStock(row.color, row.size)"
+                      (input)="setStock(row.color, row.size, $any($event.target).value)"
+                    />
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <label class="checkbox-row">
+              <input type="checkbox" formControlName="inStock" />
+              {{ t('admin.inStock') }}
+            </label>
+          }
 
           <div class="form-actions">
             <button type="button" class="btn-cancel" (click)="closeForm()">{{ t('admin.cancel') }}</button>

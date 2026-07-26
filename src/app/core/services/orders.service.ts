@@ -13,7 +13,7 @@ export interface OrderItemDto {
   image: string;
 }
 
-export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'outForDelivery' | 'delivered' | 'cancelled';
 
 export interface OrderUserDto {
   id: string;

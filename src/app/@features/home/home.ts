@@ -24,7 +24,7 @@ export class Home implements OnInit, OnDestroy {
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     phone: ['', Validators.required],
-    email: [''],
+    email: ['', Validators.email], // optional field, but must be a real email format if filled in
     message: ['', Validators.required],
   });
   contactSending = signal(false);

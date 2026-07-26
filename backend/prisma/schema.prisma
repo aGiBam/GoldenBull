@@ -57,7 +57,7 @@ model ProductVariant {
   @@unique([productId, color, size])
 }
 
-// status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
+// status: "pending" | "confirmed" | "shipped" | "outForDelivery" | "delivered" | "cancelled"
 // paymentMethod: "cod" | "vodafone" | "instapay" — all pay-on-delivery / manual-transfer,
 // no online payment gateway is used, so there's no separate paymentStatus to track.
 // paymentProof: optional base64 data URL of a transfer screenshot the customer uploads

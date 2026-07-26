@@ -396,6 +396,29 @@
 }
 
 .promo-apply-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.promo-input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.promo-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(200,146,10,0.3);
+  border-top-color: var(--color-gold);
+  border-radius: 50%;
+  animation: promo-spin 0.6s linear infinite;
+}
+
+@keyframes promo-spin {
+  to { transform: rotate(360deg); }
+}
+
+.shipping-row { color: var(--text-secondary); }
+
+.shipping-fee-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin: -0.2rem 0 0.6rem;
+}
 
 .promo-applied-row {
   display: flex;

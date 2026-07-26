@@ -57,7 +57,13 @@ export class ProductDetail {
           const requestedColor = requestedColorName
             ? p?.colors.find((c) => c.name === requestedColorName)
             : undefined;
-          this.selectedColor.set(requestedColor ?? p?.colors[0] ?? null);
+          // Otherwise, default to whichever color's own photo matches the
+          // product's main listing photo — not just colors[0] — so the photo
+          // shown here on first load matches the one the customer already
+          // saw on the grid/homepage instead of silently switching to a
+          // different color's photo.
+          const matchingDefaultColor = p?.colors.find((c) => c.image === p.image);
+          this.selectedColor.set(requestedColor ?? matchingDefaultColor ?? p?.colors[0] ?? null);
           this.selectedSize.set(p?.sizes?.[0] ?? null);
           this.quantity.set(1);
         }),

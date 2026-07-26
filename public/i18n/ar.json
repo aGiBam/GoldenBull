@@ -123,6 +123,8 @@
     "promoApply": "تطبيق",
     "discount": "الخصم",
     "depositLabel": "العربون (20%)",
+    "shippingFee": "رسوم التوصيل التقريبية",
+    "shippingFeeNote": "بتتدفع لمندوب التوصيل عند الاستلام — مش جزء من الإجمالي أونلاين.",
     "orderSummary": "ملخص الطلب",
     "placeOrder": "تأكيد الطلب",
     "orderPlaced": "تم تقديم الطلب!",

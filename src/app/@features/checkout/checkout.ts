@@ -61,6 +61,17 @@ export class Checkout {
   totalAfterDiscount = computed(() => Math.max(0, this.subtotal() - this.discountAmount()));
   deposit = computed(() => Math.ceil(this.totalAfterDiscount() * 0.2));
 
+  // Estimated courier fee for the selected governorate — paid to the courier
+  // on delivery (not collected online), so it's shown separately and never
+  // added into subtotal/deposit. Recomputes live as the governorate <select>
+  // changes; falls back to 0 until one is picked.
+  selectedGovernorateFee = computed(() => {
+    const govName = this.form.get('governorate')?.value;
+    if (!govName) return 0;
+    const match = this.governorates.find((g) => g.en === govName);
+    return match?.fee ?? 0;
+  });
+
   /** Every payment method requires a deposit to confirm the order, so the proof
    * screenshot upload is offered regardless of which method is selected. */
   get showsProofUpload(): boolean {

@@ -23,7 +23,14 @@ app.use(
   cors({
     origin(origin, callback) {
       const isLocalhost = !origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-      if (isLocalhost || allowedOrigins.includes(origin ?? '')) {
+      // Every Vercel preview deployment of the frontend gets its own
+      // branch/PR-specific subdomain (goldenbull-git-addbe-...vercel.app,
+      // goldenbull-<hash>-...vercel.app, etc.) — there's no fixed list of
+      // these to add to CORS_ORIGIN one at a time, so any *.vercel.app
+      // origin is allowed here (safe: these are all deployments of our own
+      // projects under our own Vercel account, not arbitrary third parties).
+      const isVercelPreview = origin ? /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin) : false;
+      if (isLocalhost || isVercelPreview || allowedOrigins.includes(origin ?? '')) {
         callback(null, true);
       } else {
         callback(new Error(`CORS blocked for origin: ${origin}`));

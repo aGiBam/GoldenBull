@@ -77,6 +77,8 @@
 .form-group input:focus,
 .form-group select:focus { border-color: var(--color-gold); }
 
+/* Global <option> styling now lives in styles.scss so it applies to every
+   select in the app, not just this page. */
 .optional-tag { color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
 
 .field-error {

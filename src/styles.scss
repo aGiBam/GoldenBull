@@ -96,6 +96,29 @@ html {
 
   [dir='rtl'] { font-family: 'Cairo', 'Poppins', sans-serif; }
 
+  /* Global <option> styling. Browsers render a <select>'s open dropdown list
+     themselves and mostly ignore the page's CSS variables/theme, defaulting
+     to a plain white popup with low-contrast text regardless of how the
+     closed <select> itself is styled. Setting an explicit dark background +
+     light text here (applied to every select in the app) keeps every open
+     dropdown readable instead of washed-out white, with the highlighted/
+     selected option using the site's gold accent for a clear active state. */
+  select option {
+    background: #2a2118;
+    color: #f3ead9;
+  }
+
+  select option:disabled {
+    color: #8a7f6d;
+  }
+
+  select option:checked,
+  select option:hover,
+  select option:focus {
+    background: var(--color-gold);
+    color: #1a0e03;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     margin: 0; padding: 0;
     font-family: 'Cinzel', 'Poppins', serif;

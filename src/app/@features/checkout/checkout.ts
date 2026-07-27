@@ -60,7 +60,11 @@ export class Checkout {
   subtotal = this.cart.subtotal;
   discountAmount = computed(() => this.promoApplied()?.amount ?? 0);
   totalAfterDiscount = computed(() => Math.max(0, this.subtotal() - this.discountAmount()));
-  deposit = computed(() => Math.ceil(this.totalAfterDiscount() * 0.2));
+
+  // TEMPORARILY DISABLED (2026-07-27): the 20% deposit requirement is paused
+  // for now — keeping the computed signal here, commented out, so it's a
+  // one-line change to bring back later instead of rebuilding it from scratch.
+  // deposit = computed(() => Math.ceil(this.totalAfterDiscount() * 0.2));
 
   // Estimated courier fee for the selected governorate — paid to the courier
   // on delivery (not collected online), so it's shown separately and never
@@ -80,9 +84,9 @@ export class Checkout {
   }
 
   get needsDeposit(): boolean {
-    // All remaining payment methods (COD / Vodafone Cash / InstaPay) are pay-on-delivery
-    // or manual-transfer, so a deposit is always required to confirm the order.
-    return true;
+    // TEMPORARILY DISABLED (2026-07-27): deposit requirement paused — flip
+    // this back to `true` (and uncomment `deposit` above) to re-enable.
+    return false;
   }
 
   selectPayment(method: PaymentMethod) {
